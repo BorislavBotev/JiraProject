@@ -11,13 +11,18 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.example.demo.exceptions.UserException;
+
 @ControllerAdvice
 public class MyExceptionHandler extends ResponseEntityExceptionHandler{
 	@ExceptionHandler({NoSuchElementException.class})
     public  ResponseEntity<String> handleException(NoSuchElementException e) {
-//        response.setStatus(401);
-//        response.getOutputStream().print(e.getMessage());
         System.out.println("fhfghfghfgh");
-        return new ResponseEntity<>("Invalid username or password",new HttpHeaders(),HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.UNAUTHORIZED);
+    }
+	@ExceptionHandler({UserException.class})
+    public  ResponseEntity<String> handleUserException(UserException e) {
+        System.out.println("asddddddddd");
+        return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.UNAUTHORIZED);
     }
 }

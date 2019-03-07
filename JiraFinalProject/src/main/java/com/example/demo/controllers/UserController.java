@@ -1,6 +1,7 @@
-package com.example.demo.controller;
+package com.example.demo.controllers;
 
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dao.UserDAO;
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.exceptions.UserException;
 import com.example.demo.model.User;
 
 @RestController
@@ -22,7 +24,7 @@ public class UserController {
 	private UserDAO userDao;
 	
 	@PostMapping("/login")
-	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request) {
+	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request) throws UserException {
 //		User user;
 //		try {
 //			user = userDao.login(loginUser);
@@ -37,10 +39,14 @@ public class UserController {
 //			e.printStackTrace();
 //			return null;
 //		}
-		User user=userDao.login(loginUser);
-		HttpSession session=request.getSession();
-		session.setAttribute("userId",user.getId());
-		return user;
+		
+			User user=userDao.login(loginUser);
+			if(user==null) {
+				throw new UserException("Invalid login");
+			}
+			HttpSession session=request.getSession();
+			session.setAttribute("userId",user.getId());
+			return user;
 		
 	}
 	

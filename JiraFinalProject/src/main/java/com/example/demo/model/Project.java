@@ -11,17 +11,21 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "projects")
 public class Project {
 	
+	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "project_id")
-	private long id;
+	private Long id;
 	
 	@Column(name = "project_name")
 	private String name;
@@ -34,5 +38,10 @@ public class Project {
 	
 	@Transient //@OneToMany
 	private Set<Component> components;
+	
+	public Project(Long id,String name) {
+		this.id=id;
+		this.name=name;
+	}
 	
 }

@@ -17,7 +17,7 @@ import com.example.demo.repositories.UserRepository;
 @Component
 public class UserDAO {
 	@Autowired
-	private UserRepository repository;
+	private UserRepository userRepository;
 	@Autowired
 	private JdbcTemplate template;
 	private List<User> users;
@@ -25,44 +25,13 @@ public class UserDAO {
 	
 	public User login(LoginDTO user)  {
 		
-		return repository.findAll().stream().filter(u->u.getUsername().equals(user.getUsername())
+		return userRepository.findAll().stream().filter(u->u.getUsername().equals(user.getUsername())
 				&& u.getPassword().equals(user.getPassword())).findAny().get();
-//		Connection con=template.getDataSource().getConnection();
-//		PreparedStatement ps=con.prepareStatement("SELECT * FROM users WHERE username=? AND password=?");
-//		ps.setString(1, user.getUsername());
-//		ps.setString(2, user.getPassword());
-//		ResultSet rs=ps.executeQuery();
-//		if(!rs.next()) {
-//			System.out.println("nqma");
-//			return null;
-//		}
-//		//System.out.println(new User(rs.getLong(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getBoolean(6)));
-//		return new User(rs.getLong(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getBoolean(6));
-//		
-		
-		
-		
-		
-//		System.out.println(repository.findAll().stream().filter(u->u.getUsername().equals(user.getUsername()) 
-//				&& u.getPassword().equals(user.getPassword())).findFirst().get());
-//		return repository.findAll().stream().filter(u->u.getUsername().equals(user.getUsername()) 
-//				&& u.getPassword().equals(user.getPassword())).findFirst().get();
+	}
 
-	}
-	public static boolean isLoggedIn(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
-		
-		if (session.getAttribute("userId") == null) {
-			response.setStatus(401);
-			return false;
-		}
-		return true;
-	}
-	public  boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
-		Long id=(Long) session.getAttribute("userId");
-		return users.stream().filter(u->u.getId().equals(id)).findFirst().get().isAdmin();
-	}
+	public User getCurrentUser(HttpServletRequest request) {
+		Long id=(Long) request.getSession().getAttribute("userId");
+		return userRepository.findAll().stream().filter(u->u.getId().equals(id)).findAny().get();
 	
-	
+	}
 }
