@@ -11,12 +11,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.example.demo.exceptions.IssueException;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -43,12 +45,15 @@ public class Issue {
 	@JoinColumn(name = "priority_id")
 	private PriorityModel priority;
 	
+	@Setter
 	@Column(name = "description")
 	private String description;
 	
+	@Setter
 	@Column(name = "create_date")
 	private LocalDateTime createDate;
 	
+	@Setter
 	@Column(name = "update_date")
 	private LocalDateTime lastUpdateDate;
 	
@@ -56,6 +61,7 @@ public class Issue {
 	@JoinColumn(name = "project_id")
 	private Project project;
 	
+	@Setter
 	@ManyToOne
 	@JoinColumn(name = "sprint_id")
 	private Sprint sprint;
@@ -64,11 +70,49 @@ public class Issue {
 	@JoinColumn(name = "reporter_user_id")
 	private User reporterUser;
 	
+	@Setter
 	@ManyToOne
 	@JoinColumn(name = "asignee_user_id")
 	private User asigneeUser;
 	
+	@Setter
 	@ManyToOne
 	@JoinColumn(name = "component_id")
 	private Component component;
+
+	public void setSummary(String summary) throws IssueException {
+		if(summary!=null && summary.trim().length()>0) {
+			this.summary = summary;
+		} else throw new IssueException("Invalid Issue Name!");
+	}
+
+	public void setType(TypeModel type) throws IssueException {
+		if(type!=null && type.getName()!=null && type.getName().trim().length()>0) {
+			this.type = type;			
+		} else throw new IssueException("Invalid Issue Type!");
+	}
+
+	public void setStatus(StatusModel status) throws IssueException {
+		if(status!=null && status.getName()!=null && status.getName().trim().length()>0) {
+			this.status = status;			
+		} else throw new IssueException("Invalid Issue Status!");
+	}
+
+	public void setPriority(PriorityModel priority) throws IssueException {
+		if(priority!=null && priority.getName()!=null && priority.getName().trim().length()>0) {
+			this.priority = priority;			
+		} else throw new IssueException("Invalid Issue Priority!");
+	}
+
+	public void setProject(Project project) throws IssueException {
+		if(project!=null) {
+			this.project = project;			
+		} else throw new IssueException("Invalid Project!");
+	}
+
+	public void setReporterUser(User reporterUser) throws IssueException {
+		if(reporterUser!=null) {
+			this.reporterUser = reporterUser;			
+		} else throw new IssueException("Invalid Reporter User");
+	}
 }
