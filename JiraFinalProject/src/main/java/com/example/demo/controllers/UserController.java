@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class UserController {
 	private UserDAO userDao;
 	
 	@PostMapping("/login")
-	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request) throws UserException {
+	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request,HttpServletResponse response) throws UserException {
 //		User user;
 //		try {
 //			user = userDao.login(loginUser);
@@ -39,14 +40,18 @@ public class UserController {
 //			e.printStackTrace();
 //			return null;
 //		}
-		
-			User user=userDao.login(loginUser);
-			if(user==null) {
-				throw new UserException("Invalid login");
+			try {
+				User user=userDao.login(loginUser);
+				HttpSession session=request.getSession();
+				session.setAttribute("userId",user.getId());
+				return user;
 			}
-			HttpSession session=request.getSession();
-			session.setAttribute("userId",user.getId());
-			return user;
+			catch(NoSuchElementException e){
+				e.printStackTrace();
+				response.setStatus(401);
+			}
+			return null;
+			
 		
 	}
 	
