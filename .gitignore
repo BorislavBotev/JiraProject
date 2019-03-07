@@ -2,6 +2,7 @@
 /.metadata/
 # Compiled class file
 *.class
+JiraFinalProject/application.properties
 
 # Log file
 *.log
