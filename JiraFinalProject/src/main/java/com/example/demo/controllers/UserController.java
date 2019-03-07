@@ -1,9 +1,5 @@
 package com.example.demo.controllers;
 
-import java.sql.SQLException;
-import java.util.NoSuchElementException;
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

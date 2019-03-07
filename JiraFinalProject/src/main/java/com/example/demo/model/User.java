@@ -22,12 +22,14 @@ import lombok.NoArgsConstructor;
 public class User {
 	
 	@Id
+	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="user_id")
 	private Long id;
 	
 	@Column(name = "email")
 	private String email;
+	
+	@Column(name = "username")
 	private String username;
 	
 	@Column(name = "full_name")
@@ -35,7 +37,9 @@ public class User {
 	
 	@Column(name = "password")
 	private String password;
+	
 	private boolean isAdmin;
+	
 	@Transient //@OneToMany
 	private Set<Issue> asignedIssues;
 	

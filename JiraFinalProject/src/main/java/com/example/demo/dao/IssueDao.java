@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.dto.DetailedIssueDTO;
 import com.example.demo.dto.IssueOverviewDTO;
+import com.example.demo.exceptions.IssueException;
 import com.example.demo.repositories.IssueRepository;
 
 @Component
@@ -50,7 +51,11 @@ public class IssueDao {
 	}
 
 	
-	public DetailedIssueDTO getIssueDetails(long issueId) {
+	public DetailedIssueDTO getIssueDetails(long issueId) throws IssueException {
+		if(!issueRepository.findById(issueId).isPresent()) {
+			throw new IssueException("Value Not Found!");
+		}
+		
 		return issueRepository.findById(issueId).map(issue -> new DetailedIssueDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), issue.getSprint().getName(), issue.getDescription(), 
 				issue.getType().getName(), issue.getPriority().getName(), issue.getStatus().getName(), 
 				issue.getCreateDate(), issue.getLastUpdateDate(), issue.getReporterUser().getUsername(), issue.getAsigneeUser().getUsername())).get();
