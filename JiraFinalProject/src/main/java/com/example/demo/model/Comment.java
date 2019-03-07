@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import java.util.Set;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,28 +10,31 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
 @Entity
-@Table(name = "components")
-public class Component {
+@Table(name = "comments")
+public class Comment {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "component_id")
+	@Column(name = "comment_id")
 	private long id;
 	
-	@Column(name = "component_name")
-	private String name;
+	@Column(name = "comment_text")
+	private String text;
 	
 	@ManyToOne
-	@JoinColumn(name = "project_id")
-	private Project project;
+	@JoinColumn(name = "issue_id")
+	private Issue issue;
 	
-	@Transient //@OneToMany
-	private Set<Issue> issues;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+	
+	@Column(name = "create_date")
+	private LocalDateTime createDate;
 }

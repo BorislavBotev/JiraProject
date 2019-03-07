@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.example.demo.dto.UserRepository;
+import com.example.demo.repositories.UserRepository;
+
+
 
 public class UserCheck {
 	private UserRepository repository;
