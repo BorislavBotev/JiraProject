@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -34,7 +36,6 @@ public class Component {
 	
 	@Column(name = "component_name")
 	private String name;
-	
 	private String description;
 	
 	@ManyToOne
@@ -42,7 +43,7 @@ public class Component {
 	private Project project;
 	
 	@Transient //@OneToMany
-	private Set<Issue> issues;
+	private List<Issue> issues=new ArrayList<Issue>();
 	
 	
 	public void setName(String name) throws InvalidComponentException {

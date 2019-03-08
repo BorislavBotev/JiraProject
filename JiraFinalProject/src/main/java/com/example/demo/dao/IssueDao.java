@@ -15,11 +15,11 @@ import com.example.demo.repositories.IssueRepository;
 
 @Component
 public class IssueDao {
-	public static final String IssueOverviewQuery = "select i.issue_id, i.issue_name, p.project_name, t.type_name, pr.priority_name\r\n" + 
-			"from issues i join projects p on(i.project_id = p.project_id )\r\n" + 
-			"join `types` t on (i.type_id = t.type_id)\r\n" + 
-			"join priorities pr on (i.priority_id = pr.priority_id)";
-	public static final String AssignedIssuesOverview = IssueOverviewQuery + " where i.asignee_user_id = ";
+//	public static final String IssueOverviewQuery = "select i.issue_id, i.issue_name, p.project_name, t.type_name, pr.priority_name\r\n" + 
+//			"from issues i join projects p on(i.project_id = p.project_id )\r\n" + 
+//			"join `types` t on (i.type_id = t.type_id)\r\n" + 
+//			"join priorities pr on (i.priority_id = pr.priority_id)";
+//	public static final String AssignedIssuesOverview = IssueOverviewQuery + " where i.asignee_user_id = ";
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
@@ -39,14 +39,11 @@ public class IssueDao {
 	}
 	
 	
-	public List<IssueOverviewDTO> getAssignedIssuesOverview(long userId) {
-//		List<IssueOverviewDTO> issues = jdbcTemplate.query(AssignedIssuesOverview + userId, issueOverviewRowMapper());
-		
+	public List<IssueOverviewDTO> getAssignedIssuesOverview(long userId) {		
 		List<IssueOverviewDTO> issues = issueRepository.findAll().stream()
 								.filter(issue -> issue.getAsigneeUser().getId() == userId)
 								.map(issue ->new IssueOverviewDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), issue.getType().getName(), issue.getPriority().getName()))
 								.collect(Collectors.toList());
-		
 		return issues!=null ? issues : new LinkedList<IssueOverviewDTO>();
 	}
 
@@ -56,7 +53,7 @@ public class IssueDao {
 			throw new IssueException("Value Not Found!");
 		}
 		
-		return issueRepository.findById(issueId).map(issue -> new DetailedIssueDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), issue.getSprint().getName(), issue.getDescription(), 
+		return issueRepository.findById(issueId).map(issue -> new DetailedIssueDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), "", issue.getDescription(), 
 				issue.getType().getName(), issue.getPriority().getName(), issue.getStatus().getName(), 
 				issue.getCreateDate(), issue.getLastUpdateDate(), issue.getReporterUser().getUsername(), issue.getAsigneeUser().getUsername())).get();
 	}

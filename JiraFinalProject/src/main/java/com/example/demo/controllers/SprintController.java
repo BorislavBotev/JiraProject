@@ -11,32 +11,40 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.ComponentDAO;
-import com.example.demo.dto.CreateComponentDTO;
-import com.example.demo.exceptions.InvalidComponentException;
+import com.example.demo.dao.SprintDAO;
+import com.example.demo.dto.CreateSprintDTO;
+import com.example.demo.exceptions.InvalidDateException;
+import com.example.demo.exceptions.InvalidNameException;
+import com.example.demo.exceptions.InvalidStatusexception;
 import com.example.demo.repositories.ProjectRepository;
+
 @RestController
-public class ComponentController {
+public class SprintController {
 	@Autowired
 	private ProjectRepository projectRepository;
 	@Autowired
 	private UserCheck uc;
 	@Autowired
-	private ComponentDAO componentDao;
-	@PostMapping("projects/{id}/createComponent")
-	public void createNewComponent(@PathVariable Long id,@RequestBody CreateComponentDTO component,HttpServletRequest request, HttpServletResponse response) {
+	private SprintDAO sprintDao;
+	@PostMapping("projects/{id}/createSprint")
+	public void createNewSprint(@PathVariable Long id,@RequestBody CreateSprintDTO sprint,
+			HttpServletRequest request,HttpServletResponse response) {
+		System.out.println("hiiiiiiiiiiiiii");
 		if(!uc.loggedAndAdmin(request, response)) {
 			return;
-		}
+		}	
 		if(projectRepository.getOne(id)==null) {
 			System.out.println("invalid project id");
 			response.setStatus(400);
 			return;
 		}
 		try {
-			componentDao.createComponent(component,id);
-		} catch (InvalidComponentException e) {
-			response.setStatus(400);
+			sprintDao.createSprint(sprint,id);
+		} catch (InvalidNameException | InvalidDateException | InvalidStatusexception e) {
 			System.out.println(e.getMessage());
+			response.setStatus(400);
 		}
+		
+		
 	}
 }
