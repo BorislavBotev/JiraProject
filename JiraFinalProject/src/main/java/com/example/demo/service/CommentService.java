@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,15 @@ public class CommentService {
 			.map(comment -> new CommentDTO(comment.getUser().getUsername(), comment.getText(), comment.getIssue().getSummary(), comment.getCreateDate()))
 			.sorted((c1,c2) -> c1.getDate().compareTo(c2.getDate()))
 			.collect(Collectors.toList());
-		return comments;
+		return comments!=null ? comments : new LinkedList<CommentDTO>();
+	}
+
+	public List<CommentDTO> getCurrentUserComments(Long userId) {
+		List<CommentDTO> comments = commentRepository.findAll().stream()
+				.filter(comment -> comment.getUser().getId() == userId)
+				.map(comment -> new CommentDTO(comment.getUser().getUsername(), comment.getText(), comment.getIssue().getSummary(), comment.getCreateDate()))
+				.sorted((c1,c2) -> c1.getDate().compareTo(c2.getDate()))
+				.collect(Collectors.toList());
+		return comments!=null ? comments : new LinkedList<CommentDTO>();
 	}
 }

@@ -56,4 +56,14 @@ public class CommentController {
 			return null;
 		}
 	}
+	
+	@GetMapping("issues/mycomments")
+	public List<CommentDTO> getCurrentUserComments( HttpServletRequest request, HttpServletResponse response){
+		if(!userCheck.isLoggedIn(request, response)) {
+			return null;
+		}
+		HttpSession session = request.getSession();
+		Long userId = (Long) session.getAttribute("userId");
+		return commentService.getCurrentUserComments(userId);
+	}
 }
