@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -30,10 +30,10 @@ public class Sprint {
 	private String name;
 	
 	@Column(name = "start_date")
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 	
 	@Column(name = "end_date")
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 	
 	@Transient //@OneToMany
 	private Set<Issue> issues;

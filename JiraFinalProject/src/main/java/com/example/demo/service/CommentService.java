@@ -14,6 +14,7 @@ import com.example.demo.exceptions.CommentException;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.exceptions.UserException;
 import com.example.demo.model.Comment;
+import com.example.demo.model.Issue;
 import com.example.demo.repositories.CommentRepository;
 import com.example.demo.repositories.IssueRepository;
 import com.example.demo.repositories.UserRepository;
@@ -39,10 +40,14 @@ public class CommentService {
 			throw new CommentException("Invalid Comment!");
 		}
 		Comment comment = new Comment();
+		LocalDateTime updateDate = LocalDateTime.now();
+		Issue issue = issueRepository.findById(issueId).get();
+		issue.setLastUpdateDate(updateDate);
+		issueRepository.save(issue);
 		comment.setText(newComment.getContent());
-		comment.setIssue(issueRepository.findById(issueId).get());
+		comment.setIssue(issue);
 		comment.setUser(userRepository.findById(userId).get());
-		comment.setCreateDate(LocalDateTime.now());
+		comment.setCreateDate(updateDate);
 		commentRepository.save(comment);
 	}
 	
