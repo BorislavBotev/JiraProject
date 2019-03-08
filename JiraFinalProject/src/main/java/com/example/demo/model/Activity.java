@@ -11,12 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.example.demo.exceptions.ActivityException;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "activities_log")
 public class Activity {
@@ -35,4 +38,10 @@ public class Activity {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	public void setText(String text) throws ActivityException {
+		if(text != null && text.trim().length() > 0) {
+			this.text = text;
+		} else throw new ActivityException("Invalid Content!");
+	}
 }

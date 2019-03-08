@@ -36,6 +36,9 @@ public class Component {
 	
 	@Column(name = "component_name")
 	private String name;
+
+	
+	@Column(name = "description")
 	private String description;
 	
 	@ManyToOne

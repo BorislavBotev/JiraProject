@@ -70,7 +70,6 @@ public class Issue {
 	@JoinColumn(name = "reporter_user_id")
 	private User reporterUser;
 	
-	@Setter
 	@ManyToOne
 	@JoinColumn(name = "asignee_user_id")
 	private User asigneeUser;
@@ -105,14 +104,20 @@ public class Issue {
 	}
 
 	public void setProject(Project project) throws IssueException {
-		if(project!=null) {
+		if(project != null) {
 			this.project = project;			
 		} else throw new IssueException("Invalid Project!");
 	}
 
 	public void setReporterUser(User reporterUser) throws IssueException {
-		if(reporterUser!=null) {
+		if(reporterUser != null) {
 			this.reporterUser = reporterUser;			
 		} else throw new IssueException("Invalid Reporter User");
+	}
+	
+	public void setAsigneeUser(User asigneeUser) throws IssueException {
+		if(asigneeUser != null) {
+			this.asigneeUser = asigneeUser;			
+		} else throw new IssueException("Invalid Asignee User");
 	}
 }
