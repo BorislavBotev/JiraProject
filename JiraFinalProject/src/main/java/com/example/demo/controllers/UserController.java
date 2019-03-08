@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
 import java.sql.SQLException;
-
+import java.util.NoSuchElementException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,16 +27,27 @@ public class UserController {
 	private UserCheck userCheck;
 	
 	@PostMapping("/login")
-	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request) throws UserException {
+	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request, HttpServletResponse response) throws UserException {
 
 			User user=userDao.login(loginUser);
 			if(user==null) {
+				response.setStatus(401);
 				throw new UserException("Invalid login");
 			}
 			HttpSession session=request.getSession();
 			session.setAttribute("userId",user.getId());
 			return user;
-		
+//	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request,HttpServletResponse response) throws UserException {
+//			try {
+//				User user=userDao.login(loginUser);
+				
+//			}
+//			catch(NoSuchElementException e){
+//				e.printStackTrace();
+//				response.setStatus(401);
+//			}
+//			return null;
+			
 	}
 	
 	@PostMapping("/signout")

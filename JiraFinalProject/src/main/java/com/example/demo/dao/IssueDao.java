@@ -14,7 +14,7 @@ import com.example.demo.repositories.IssueRepository;
 
 @Component
 public class IssueDao {
-	
+
 	@Autowired
 	private IssueRepository issueRepository;
 
@@ -27,12 +27,12 @@ public class IssueDao {
 	}
 	
 	
+
 	public List<IssueOverviewDTO> getAssignedIssuesOverview(long userId) {
 		List<IssueOverviewDTO> issues = issueRepository.findAll().stream()
 								.filter(issue -> issue.getAsigneeUser().getId() == userId)
 								.map(issue ->new IssueOverviewDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), issue.getType().getName(), issue.getPriority().getName()))
 								.collect(Collectors.toList());
-		
 		return issues!=null ? issues : new LinkedList<IssueOverviewDTO>();
 	}
 
@@ -42,7 +42,7 @@ public class IssueDao {
 			throw new IssueException("Value Not Found!");
 		}
 		
-		return issueRepository.findById(issueId).map(issue -> new DetailedIssueDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), issue.getSprint().getName(), issue.getDescription(), 
+		return issueRepository.findById(issueId).map(issue -> new DetailedIssueDTO(issue.getId(), issue.getSummary(), issue.getProject().getName(), "", issue.getDescription(), 
 				issue.getType().getName(), issue.getPriority().getName(), issue.getStatus().getName(), 
 				issue.getCreateDate(), issue.getLastUpdateDate(), issue.getReporterUser().getUsername(), issue.getAsigneeUser().getUsername())).get();
 	}

@@ -1,5 +1,8 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,18 +13,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Data
+@ToString
 @Entity
 @NoArgsConstructor
 @Table(name = "projects")
 public class Project {
-	
-	
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "project_id")
@@ -31,17 +32,19 @@ public class Project {
 	private String name;
 	
 	@Transient //@ManyToMany
-	private Set<User> users;
+	private Set<User> users=new HashSet<>();
 	
 	@Transient //@OneToMany
-	private Set<Issue> issues;
+	private List<Issue> issues=new ArrayList<>();
 	
 	@Transient //@OneToMany
-	private Set<Component> components;
+	private List<Component> components=new ArrayList<Component>();
+	
+	@Transient //@OneToMany
+	private List<Sprint> sprints=new ArrayList<>();
 	
 	public Project(Long id,String name) {
 		this.id=id;
 		this.name=name;
 	}
-	
 }

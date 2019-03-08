@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.IssueDao;
+import com.example.demo.dao.UserDAO;
 import com.example.demo.dto.AddCommentDTO;
 import com.example.demo.dto.AddIssueDTO;
 import com.example.demo.dto.DetailedIssueDTO;
@@ -38,8 +39,9 @@ public class IssueController {
 	@Autowired
 	private IssueService issueService;
 	@Autowired
+	private UserDAO userDao;
+	@Autowired
 	private UserCheck usercheck;
-	
 	
 	@GetMapping("/issues")
 	public List<IssueOverviewDTO> listAllIssuesOverview(HttpServletRequest request, HttpServletResponse response) {
@@ -55,8 +57,9 @@ public class IssueController {
 			return null;
 		}
 		HttpSession session = request.getSession();
-		Long userId = (Long) session.getAttribute("userId");
-		return issueDao.getAssignedIssuesOverview(userId);
+		return issueDao.getAssignedIssuesOverview(userDao.getCurrentUser(request).getId());
+//		Long userId = (Long) session.getAttribute("userId");
+//		return issueDao.getAssignedIssuesOverview(userId);
 	}
 	
 	@GetMapping("/issues/{id}")

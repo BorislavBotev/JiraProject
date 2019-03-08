@@ -29,7 +29,6 @@ public class UserDAO {
 	
 	
 	public User login(LoginDTO user)  {
-		
 		return userRepository.findAll().stream().filter(u->u.getUsername().equals(user.getUsername())
 				&& u.getPassword().equals(user.getPassword())).findAny().get();
 	}

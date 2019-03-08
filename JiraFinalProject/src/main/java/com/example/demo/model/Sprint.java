@@ -13,10 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.example.demo.exceptions.InvalidDateException;
+import com.example.demo.exceptions.InvalidNameException;
+
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter 
+@Setter
 @Entity
 @Table(name = "sprints")
 public class Sprint {
@@ -24,7 +28,7 @@ public class Sprint {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "sprint_id")
-	private long id;
+	private Long id;
 	
 	@Column(name = "sprint_name")
 	private String name;
@@ -41,4 +45,24 @@ public class Sprint {
 	@ManyToOne
 	@JoinColumn(name = "status_id")
 	private StatusModel status;
+	
+	@ManyToOne
+	@JoinColumn(name = "project_id")
+	private Project project;
+	
+
+	public void setName(String name) throws InvalidNameException {
+		if(name==null || name.trim().length()==0) {
+			throw new InvalidNameException("Invalid name");
+		}
+		this.name = name;
+	}
+
+
+	public void setEndDate(LocalDate endDate) throws InvalidDateException {
+		if(endDate.isBefore(this.startDate)) {
+			throw new InvalidDateException("Invalid date");
+		}
+		this.endDate=endDate;
+	}
 }

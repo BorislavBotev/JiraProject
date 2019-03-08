@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,8 +16,10 @@ import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
+@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -44,5 +47,5 @@ public class User {
 	private Set<Issue> asignedIssues;
 	
 	@Transient //@ManyToMany
-	private Set<Project> projects;
+	private Set<Project> projects=new HashSet<>();
 }
