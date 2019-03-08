@@ -58,7 +58,7 @@ public class CommentController {
 	}
 	
 	@GetMapping("issues/mycomments")
-	public List<CommentDTO> getCurrentUserComments( HttpServletRequest request, HttpServletResponse response){
+	public List<CommentDTO> getCurrentUserComments(HttpServletRequest request, HttpServletResponse response){
 		if(!userCheck.isLoggedIn(request, response)) {
 			return null;
 		}
