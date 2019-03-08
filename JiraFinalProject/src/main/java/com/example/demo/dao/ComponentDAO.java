@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.check.UserCheck;
 import com.example.demo.dto.CreateComponentDTO;
 import com.example.demo.exceptions.InvalidComponentException;
+import com.example.demo.exceptions.InvalidSprintException;
 import com.example.demo.model.Project;
 import com.example.demo.repositories.ComponentRepository;
+import com.example.demo.repositories.IssueRepository;
 import com.example.demo.repositories.ProjectRepository;
 
 @Component
@@ -21,6 +23,8 @@ public class ComponentDAO {
 	private ComponentRepository componentRepository;
 	@Autowired
 	private ProjectRepository projectRepository;
+	@Autowired
+	private IssueRepository issueRepository;
 	public void createComponent(CreateComponentDTO component,Long id) throws InvalidComponentException {
 		Project project=projectRepository.findById(id).get();
 		com.example.demo.model.Component c=new com.example.demo.model.Component();
@@ -34,4 +38,21 @@ public class ComponentDAO {
 		c.setProject(project);
 		componentRepository.save(c);
 	}
+	public void deleteComponentById(Long componentId) throws InvalidComponentException {
+		if(!componentRepository.findById(componentId).isPresent()) {
+			throw new InvalidComponentException("No such component");
+		}
+		issueRepository.findAll().stream().
+		filter(i->
+		{
+			if(i.getComponent()==null) {
+				return false;
+			}
+				return i.getComponent().getId().equals(componentId);
+			}
+		).
+		forEach(i->i.setComponent(null));
+		componentRepository.deleteById(componentId);
+	}
+	
 }

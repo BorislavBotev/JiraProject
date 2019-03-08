@@ -1,9 +1,12 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +22,12 @@ public class ComponentController {
 	@Autowired
 	private ProjectRepository projectRepository;
 	@Autowired
-	private UserCheck uc;
+	private UserCheck usercheck;
 	@Autowired
 	private ComponentDAO componentDao;
 	@PostMapping("projects/{id}/createComponent")
 	public void createNewComponent(@PathVariable Long id,@RequestBody CreateComponentDTO component,HttpServletRequest request, HttpServletResponse response) {
-		if(!uc.loggedAndAdmin(request, response)) {
+		if(!usercheck.loggedAndAdmin(request, response)) {
 			return;
 		}
 		if(projectRepository.getOne(id)==null) {
@@ -38,5 +41,28 @@ public class ComponentController {
 			response.setStatus(400);
 			System.out.println(e.getMessage());
 		}
+	}
+	@DeleteMapping("project/{projectId}/component/delete/{componentId}")
+	public void deleteComponent(@PathVariable Long projectId,@PathVariable Long componentId,
+			HttpServletRequest request,HttpServletResponse response) {
+		if(!usercheck.isLoggedIn(request, response)) {
+			return;
+		}
+		if(projectRepository.getOne(projectId)==null) {
+			System.out.println("invalid project id");
+			response.setStatus(400);
+			return;
+		}
+		try {
+			componentDao.deleteComponentById(componentId);
+		} catch (InvalidComponentException e) {
+			try {
+				response.sendError(400, e.getMessage());
+			} catch (IOException e1) {
+				response.setStatus(400);
+				e1.printStackTrace();
+			}
+		}
+		
 	}
 }
