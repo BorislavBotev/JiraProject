@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import javax.servlet.http.HttpServletRequest;
@@ -8,12 +9,14 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.UserDAO;
 import com.example.demo.dto.AddUserDTO;
+import com.example.demo.dto.ChangePasswordDTO;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.exceptions.UserException;
 import com.example.demo.model.User;
@@ -27,27 +30,14 @@ public class UserController {
 	private UserCheck userCheck;
 	
 	@PostMapping("/login")
-	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request, HttpServletResponse response) throws UserException {
-
+	public void login(@RequestBody LoginDTO loginUser,HttpServletRequest request, HttpServletResponse response) throws UserException {
 			User user=userDao.login(loginUser);
 			if(user==null) {
 				response.setStatus(401);
 				throw new UserException("Invalid login");
 			}
 			HttpSession session=request.getSession();
-			session.setAttribute("userId",user.getId());
-			return user;
-//	public User login(@RequestBody LoginDTO loginUser,HttpServletRequest request,HttpServletResponse response) throws UserException {
-//			try {
-//				User user=userDao.login(loginUser);
-				
-//			}
-//			catch(NoSuchElementException e){
-//				e.printStackTrace();
-//				response.setStatus(401);
-//			}
-//			return null;
-			
+			session.setAttribute("userId",user.getId());			
 	}
 	
 	@PostMapping("/signout")
@@ -76,8 +66,20 @@ public class UserController {
 	}
 	
 	
-	@PostMapping("/changePassword")
-	public void changePassword() {
-		
+	@PutMapping("/changePassword")
+	public void changePassword(@RequestBody ChangePasswordDTO newPassword, HttpServletRequest request, HttpServletResponse response) {
+		if(!userCheck.isLoggedIn(request, response)) {
+			return;
+		}
+		User currentUser = userDao.getCurrentUser(request);
+		try {
+			userDao.changePassword(newPassword, currentUser);
+		} catch (UserException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
 	}
 }

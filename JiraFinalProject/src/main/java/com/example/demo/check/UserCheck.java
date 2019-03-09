@@ -26,7 +26,6 @@ public class UserCheck {
 	public  boolean isAdmin(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		Long id=(Long) session.getAttribute("userId");
-//		System.out.println(repository.findAll().stream().filter(u->u.getId().equals(id)).findFirst().get());
 		return repository.findAll().stream().filter(u->u.getId().equals(id)).findFirst().get().isAdmin();
 	}
 	public boolean loggedAndAdmin(HttpServletRequest request,HttpServletResponse response) {

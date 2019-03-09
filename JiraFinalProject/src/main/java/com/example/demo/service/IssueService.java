@@ -7,15 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.AddIssueDTO;
+import com.example.demo.dto.ChangeUserDTO;
+import com.example.demo.dto.DescriptionDTO;
 import com.example.demo.dto.EditIssueDTO;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.exceptions.PriorityException;
+import com.example.demo.exceptions.SprintException;
 import com.example.demo.exceptions.StatusException;
 import com.example.demo.exceptions.TypeException;
+import com.example.demo.exceptions.UserException;
 import com.example.demo.model.Issue;
 import com.example.demo.model.PriorityModel;
 import com.example.demo.model.StatusModel;
 import com.example.demo.model.TypeModel;
+import com.example.demo.model.User;
 import com.example.demo.repositories.ComponentRepository;
 import com.example.demo.repositories.IssueRepository;
 import com.example.demo.repositories.PriorityRepository;
@@ -24,6 +29,8 @@ import com.example.demo.repositories.SprintRepository;
 import com.example.demo.repositories.StatusRepository;
 import com.example.demo.repositories.TypeRepository;
 import com.example.demo.repositories.UserRepository;
+
+import javassist.runtime.Desc;
 
 @Service
 public class IssueService {
@@ -122,6 +129,46 @@ public class IssueService {
 		issue.setLastUpdateDate(LocalDateTime.now());
 		issueRepository.save(issue);
 	}
+	
+	public void changeIssueAsignee(Long issueId, ChangeUserDTO newAsignee) throws IssueException, UserException {
+		if(!issueRepository.findById(issueId).isPresent()) {
+			throw new IssueException("Issue Not Found!");
+		}
+		if(newAsignee.getUsername()==null || !userRepository.findByUsername(newAsignee.getUsername()).isPresent()) {
+			throw new UserException("User Not Found");
+		}
+		Issue issue = issueRepository.findById(issueId).get();
+		User newUser = userRepository.findByUsername(newAsignee.getUsername()).get();
+		issue.setAsigneeUser(newUser);
+		issueRepository.save(issue);
+	}
+	
+	public void changeIssueSprint(Long issueId, EditIssueDTO newSprint) throws IssueException, SprintException {
+		if(!issueRepository.findById(issueId).isPresent()) {
+			throw new IssueException("Issue Not Found!");
+		}
+		Issue issue = issueRepository.findById(issueId).get();
+		if(newSprint.getNewId()!=null && !sprintRepository.findById(newSprint.getNewId()).isPresent()) {
+			throw new SprintException("Sprint Not Found!");
+		}
+		if(newSprint.getNewId()==null) {
+			issue.setSprint(null);
+			issueRepository.save(issue);
+			return;
+		}
+		issue.setSprint(sprintRepository.findById(newSprint.getNewId()).get());
+		issueRepository.save(issue);
+	}
+	
+	public void addDescription (Long issueId, DescriptionDTO description) throws IssueException {
+		if(!issueRepository.findById(issueId).isPresent()) {
+			throw new IssueException("Issue Not Found!");
+		}
+		Issue issue = issueRepository.findById(issueId).get();
+		issue.setDescription(description.getDescription());
+		issueRepository.save(issue);
+	}
+	
 	
 	
 	
