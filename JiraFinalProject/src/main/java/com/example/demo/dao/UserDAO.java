@@ -77,6 +77,7 @@ public class UserDAO {
 		ps.close();
 	}
 	
+
 	public void changePassword(ChangePasswordDTO newPassword, User user) throws UserException {
 		if(newPassword.getOldPassword() == null || newPassword.getNewPassword() == null || newPassword.getNewPasswordConfirm() == null) {
 			throw new UserException("Invalid Data!");

@@ -51,7 +51,7 @@ public class SprintService {
 			sp.setStatus(status);
 			sp.setProject(project);
 			System.out.println(sp);
-			project.setSprints(Arrays.asList(sp));
+			//project.setSprints(Arrays.asList(sp));
 			sprintRepository.save(sp);
 		}
 		

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -34,6 +35,19 @@ public class Project {
 	@Column(name = "project_name")
 	private String name;
 	
+
+//	@Transient //@ManyToMany
+//	private Set<User> users=new HashSet<>();
+//	
+//	@Transient //@OneToMany
+//	private List<Issue> issues=new ArrayList<>();
+//	
+//	@OneToMany(mappedBy="project")
+//	private List<Component> components;
+//	
+//	@Transient //@OneToMany
+//	private List<Sprint> sprints=new ArrayList<>();
+
 //	@ManyToMany
 //	@JoinTable(
 //	  name = "users_has_projects", 

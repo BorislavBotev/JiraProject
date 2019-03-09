@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,4 +55,17 @@ public class ProjectController {
 		}
 		return projectDao.listAllComponentsFromproject(id);
 	}
+	@DeleteMapping("project/{id}/delete")
+	public void deleteProject(@PathVariable Long id,HttpServletRequest request,HttpServletResponse response) {
+		if(!uc.loggedAndAdmin(request, response)) {
+			return;
+		}
+		if(projectRepository.getOne(id)==null) {
+			System.out.println("invalid project id");
+			response.setStatus(400);
+			return;
+		}
+		projectDao.deleteProjectById(id);
+	}
+	
 }
