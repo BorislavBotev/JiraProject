@@ -2,10 +2,8 @@ package com.example.demo.service;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.demo.dto.AddIssueDTO;
 import com.example.demo.dto.ChangeUserDTO;
 import com.example.demo.dto.DescriptionDTO;
@@ -30,8 +28,6 @@ import com.example.demo.repositories.StatusRepository;
 import com.example.demo.repositories.TypeRepository;
 import com.example.demo.repositories.UserRepository;
 
-import javassist.runtime.Desc;
-
 @Service
 public class IssueService {
 
@@ -55,8 +51,9 @@ public class IssueService {
 	
 	public void addIssue(AddIssueDTO newIssue) throws Exception {
 		Issue issue = new Issue();
-		issue.setCreateDate(LocalDateTime.now());
-		issue.setLastUpdateDate(LocalDateTime.now());
+		LocalDateTime createDate = LocalDateTime.now();
+		issue.setCreateDate(createDate);
+		issue.setLastUpdateDate(createDate);
 		
 		try {
 			//NotNull Fields
