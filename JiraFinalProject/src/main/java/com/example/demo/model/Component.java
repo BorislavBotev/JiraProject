@@ -41,6 +41,7 @@ public class Component {
 	@Column(name = "description")
 	private String description;
 	
+	
 	@ManyToOne
 	@JoinColumn(name = "project_id")
 	private Project project;
@@ -58,5 +59,6 @@ public class Component {
 	public void setProject(Project project) {
 		this.project=project;
 	}
+	
 	
 }

@@ -74,7 +74,7 @@ public class UserDAO {
 	public boolean passwordVerification(String name, String password) throws SQLException {
 		return userTemplate.getDataSource().getConnection()
 				.createStatement()
-				.executeQuery("select * from users where username = '"+ name +"'' AND password = sha1(" + password + ")")
+				.executeQuery("select * from users where username = '"+ name +"' AND password = sha1('" + password + "')")
 				.first();
 	}
 }

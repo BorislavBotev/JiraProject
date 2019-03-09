@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.check.UserCheck;
+import com.example.demo.dto.ComponentInfoDTO;
 import com.example.demo.dto.CreateComponentDTO;
 import com.example.demo.exceptions.InvalidComponentException;
 import com.example.demo.exceptions.InvalidSprintException;
@@ -25,6 +27,8 @@ public class ComponentDAO {
 	private ProjectRepository projectRepository;
 	@Autowired
 	private IssueRepository issueRepository;
+	
+	@Transactional
 	public void createComponent(CreateComponentDTO component,Long id) throws InvalidComponentException {
 		Project project=projectRepository.findById(id).get();
 		com.example.demo.model.Component c=new com.example.demo.model.Component();
@@ -48,11 +52,34 @@ public class ComponentDAO {
 			if(i.getComponent()==null) {
 				return false;
 			}
-				return i.getComponent().getId().equals(componentId);
-			}
+			return i.getComponent().getId().equals(componentId);
+		}
 		).
 		forEach(i->i.setComponent(null));
 		componentRepository.deleteById(componentId);
+	}
+	@Transactional
+	public ComponentInfoDTO showInfoById(Long componentId) throws InvalidComponentException {
+		if(!componentRepository.findById(componentId).isPresent()) {
+			throw new InvalidComponentException("No such component");
+		}
+		ComponentInfoDTO dto=new ComponentInfoDTO();
+		com.example.demo.model.Component c=componentRepository.getOne(componentId);
+		dto.setName(c.getName());
+		if(c.getDescription()!=null) {
+			dto.setDescription(c.getDescription());
+		}
+		if(issueRepository.findAll().stream().filter(i->i.getComponent().getId().equals(componentId)).findFirst().isPresent()) {
+			issueRepository.findAll().stream().filter(i->{
+				if(i.getComponent()==null) {
+					return false;
+				}
+					return i.getComponent().getId().equals(componentId);
+				
+			}).
+			forEach(i->dto.addIssueName(i.getSummary()));
+		}
+		return dto;
 	}
 	
 }
