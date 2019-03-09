@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,16 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.IssueDao;
 import com.example.demo.dao.UserDAO;
-import com.example.demo.dto.AddCommentDTO;
 import com.example.demo.dto.AddIssueDTO;
+import com.example.demo.dto.ChangeUserDTO;
+import com.example.demo.dto.DescriptionDTO;
 import com.example.demo.dto.DetailedIssueDTO;
 import com.example.demo.dto.EditIssueDTO;
 import com.example.demo.dto.IssueOverviewDTO;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.exceptions.PriorityException;
+import com.example.demo.exceptions.SprintException;
 import com.example.demo.exceptions.StatusException;
 import com.example.demo.exceptions.TypeException;
-import com.example.demo.service.CommentService;
+import com.example.demo.exceptions.UserException;
+import com.example.demo.model.User;
 import com.example.demo.service.IssueService;
 
 @RestController
@@ -56,10 +58,7 @@ public class IssueController {
 		if(!usercheck.isLoggedIn(request, response)) {
 			return null;
 		}
-		HttpSession session = request.getSession();
 		return issueDao.getAssignedIssuesOverview(userDao.getCurrentUser(request).getId());
-//		Long userId = (Long) session.getAttribute("userId");
-//		return issueDao.getAssignedIssuesOverview(userId);
 	}
 	
 	@GetMapping("/issues/{id}")
@@ -133,6 +132,54 @@ public class IssueController {
 		} catch (IssueException | PriorityException e) {
 			try {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@PutMapping("issues/{issueId}/changeAsignee")
+	public void changeAsigneeUser(@PathVariable long issueId, @RequestBody ChangeUserDTO newAsignee, HttpServletRequest request, HttpServletResponse response) {
+		if(!usercheck.isLoggedIn(request, response)) {
+			return;
+		}
+		try {
+			issueService.changeIssueAsignee(issueId, newAsignee);
+		} catch (IssueException | UserException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@PutMapping("issues/{issueId}/changeSprint")
+	public void changeIssueSprint(@PathVariable long issueId, @RequestBody EditIssueDTO newSprint, HttpServletRequest request, HttpServletResponse response) {
+		if(!usercheck.isLoggedIn(request, response)) {
+			return;
+		}
+		try {
+			issueService.changeIssueSprint(issueId, newSprint);
+		} catch (IssueException | SprintException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@PutMapping("issues/{issueId}/addDescription")
+	public void addDescription(@PathVariable long issueId, @RequestBody DescriptionDTO description, HttpServletRequest request, HttpServletResponse response) {
+		if(!usercheck.isLoggedIn(request, response)) {
+			return;
+		}
+		try {
+			issueService.addDescription(issueId, description);
+		} catch (IssueException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

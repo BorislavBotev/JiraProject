@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -31,7 +34,12 @@ public class Project {
 	@Column(name = "project_name")
 	private String name;
 	
-	@Transient //@ManyToMany
+//	@ManyToMany
+//	@JoinTable(
+//	  name = "users_has_projects", 
+//	  joinColumns = @JoinColumn(name = "project_id"), 
+//	  inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@Transient
 	private Set<User> users=new HashSet<>();
 	
 	@Transient //@OneToMany

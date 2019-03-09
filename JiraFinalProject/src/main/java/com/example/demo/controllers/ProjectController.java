@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,7 @@ public class ProjectController {
 	}
 	@GetMapping("project/{id}/components")
 	public List<ViewComponentDto> listAllComponents(@PathVariable Long id,HttpServletRequest request,HttpServletResponse response){
-		if(!uc.loggedAndAdmin(request, response)) {
+		if(!uc.isLoggedIn(request, response)) {
 			return null;
 		}
 		if(projectRepository.getOne(id)==null) {
@@ -53,5 +54,4 @@ public class ProjectController {
 		}
 		return projectDao.listAllComponentsFromproject(id);
 	}
-	
 }

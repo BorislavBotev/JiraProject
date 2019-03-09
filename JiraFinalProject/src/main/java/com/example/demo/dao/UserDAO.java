@@ -6,11 +6,13 @@ import java.sql.Statement;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.dto.AddUserDTO;
+import com.example.demo.dto.ChangePasswordDTO;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.exceptions.UserException;
 import com.example.demo.model.User;
@@ -28,9 +30,15 @@ public class UserDAO {
 	private JdbcTemplate userTemplate;
 	
 	
-	public User login(LoginDTO user)  {
-		return userRepository.findAll().stream().filter(u->u.getUsername().equals(user.getUsername())
-				&& u.getPassword().equals(user.getPassword())).findAny().get();
+	public User login(LoginDTO user) throws UserException  {
+		User foundUser =  userRepository.findAll().stream()
+								.filter(u->u.getUsername().equals(user.getUsername()))
+								.findFirst()
+								.get();
+		if(passwordVerification(user.getPassword(), foundUser.getPassword())) {
+			return foundUser;
+		}
+		throw new UserException("Wrong username or password!");
 	}
 
 	public User getCurrentUser(HttpServletRequest request) {
@@ -71,10 +79,25 @@ public class UserDAO {
 		return userID;
 	}
 	
-	public boolean passwordVerification(String name, String password) throws SQLException {
-		return userTemplate.getDataSource().getConnection()
-				.createStatement()
-				.executeQuery("select * from users where username = '"+ name +"'' AND password = sha1(" + password + ")")
-				.first();
+	public void changePassword(ChangePasswordDTO newPassword, User user) throws UserException {
+		if(newPassword.getOldPassword() == null || newPassword.getNewPassword() == null || newPassword.getNewPasswordConfirm() == null) {
+			throw new UserException("Invalid Data!");
+		}
+		if(!passwordVerification(newPassword.getOldPassword(), user.getPassword())) {
+			throw new UserException("Wrong Password!");
+		}
+		if(!newPassword.getNewPassword().equals(newPassword.getNewPasswordConfirm())) {
+			throw new UserException("New passwords are not the same!");
+		}
+		if(newPassword.getNewPassword().length() < MIN_PASSWORD_LENGHT) {
+			throw new UserException("Password is too short!");
+		}
+		String newPass = DigestUtils.shaHex(newPassword.getNewPassword());
+		user.setPassword(newPass);
+		userRepository.save(user);
+	}
+	
+	public boolean passwordVerification(String loginPass, String cryptedPass){
+		return DigestUtils.shaHex(loginPass).equals(cryptedPass);
 	}
 }
