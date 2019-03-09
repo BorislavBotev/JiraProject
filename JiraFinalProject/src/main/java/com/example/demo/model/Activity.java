@@ -39,6 +39,16 @@ public class Activity {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
+	@ManyToOne
+	@JoinColumn(name = "activityType_id")
+	private String activityType;
+	
+	@ManyToOne
+	@JoinColumn(name = "activitySubject_id")
+	private String activitySubject;
+	
+	
+	
 	public void setText(String text) throws ActivityException {
 		if(text != null && text.trim().length() > 0) {
 			this.text = text;

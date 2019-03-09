@@ -46,7 +46,7 @@ public class UserDAO {
 		return userRepository.findAll().stream().filter(u->u.getId().equals(id)).findAny().get();
 	}
 	
-	public Long createNewUser(AddUserDTO newUser) throws SQLException, UserException {
+	public void createNewUser(AddUserDTO newUser) throws SQLException, UserException {
 		PreparedStatement ps = userTemplate.getDataSource().getConnection().prepareStatement(createUserQuery);
 		String email = newUser.getEmail();
 		String username = newUser.getUsername();
@@ -56,7 +56,7 @@ public class UserDAO {
 			throw new UserException("Invalid Email!");
 		}
 		if((userRepository.findAll().stream().filter(user -> user.getEmail().equals(email)).count()) > 0) {
-			throw new UserException("Email is already taken!");
+			throw new UserException("Email is already used!");
 		}
 		if(email==null || email.trim().length()==0) {
 			throw new UserException("Invalid username!");
@@ -74,9 +74,7 @@ public class UserDAO {
 		ps.setString(4, password);
 		ps.setBoolean(5, newUser.isAdmin());
 		ps.executeUpdate();
-		Long userID = (long) Statement.RETURN_GENERATED_KEYS;
 		ps.close();
-		return userID;
 	}
 	
 	public void changePassword(ChangePasswordDTO newPassword, User user) throws UserException {

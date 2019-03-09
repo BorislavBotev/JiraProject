@@ -11,7 +11,4 @@ public class ActivityDAO {
 	@Autowired
 	private ActivityRepository activityRepository;
 	
-//	public void addActivity() {
-//	
-//	}
 }
