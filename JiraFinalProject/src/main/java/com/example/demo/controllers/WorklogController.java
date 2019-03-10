@@ -2,10 +2,10 @@ package com.example.demo.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.UserDAO;
 import com.example.demo.dto.AddWorklogDTO;
+import com.example.demo.dto.WorklogDTO;
+import com.example.demo.dto.WorklogIssueStatisticsDTO;
+import com.example.demo.dto.WorklogUserStatisticsDTO;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.exceptions.ProjectException;
 import com.example.demo.exceptions.WorklogException;
 import com.example.demo.model.User;
-import com.example.demo.service.WorklogDTO;
 import com.example.demo.service.WorklogService;
 
 @RestController
@@ -100,7 +101,22 @@ public class WorklogController {
 	}
 	
 	
+	@GetMapping("/worklog/issueStatistics")
+	public Set<WorklogIssueStatisticsDTO> getWorklogIssueStatistics(HttpServletRequest request, HttpServletResponse response) {
+		if(!usercheck.isLoggedIn(request, response)) {
+			return null;
+		}
+		return worklogService.getWorklogIssueStatistics();
+	}
 	
+	
+	@GetMapping("/worklog/userStatistics")
+	public Set<WorklogUserStatisticsDTO> getWorklogUserStatistics(HttpServletRequest request, HttpServletResponse response) {
+		if(!usercheck.isLoggedIn(request, response)) {
+			return null;
+		}
+		return worklogService.getWorklogUserStatistics();
+	}
 	
 	
 	@DeleteMapping("/worklog/delete/{worklogId}")
