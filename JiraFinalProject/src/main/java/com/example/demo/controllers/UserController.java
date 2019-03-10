@@ -30,12 +30,19 @@ public class UserController {
 	private UserCheck userCheck;
 	
 	@PostMapping("/login")
-	public void login(@RequestBody LoginDTO loginUser,HttpServletRequest request, HttpServletResponse response) throws UserException {
-			User user=userDao.login(loginUser);
-			if(user==null) {
-				response.setStatus(401);
-				throw new UserException("Invalid login");
+	public void login(@RequestBody LoginDTO loginUser,HttpServletRequest request, HttpServletResponse response) {
+			User user = null;
+			try {
+				user = userDao.login(loginUser);
+			} catch (UserException e) {
+				try {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+					return;
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
+			
 			HttpSession session=request.getSession();
 			session.setAttribute("userId",user.getId());			
 	}
@@ -59,7 +66,11 @@ public class UserController {
 		try {
 			userDao.createNewUser(newUser);
 		} catch (SQLException | UserException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			try {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	

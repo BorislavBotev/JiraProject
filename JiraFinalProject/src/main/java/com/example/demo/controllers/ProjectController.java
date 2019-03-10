@@ -30,6 +30,7 @@ public class ProjectController {
 	private ProjectDAO projectDao;
 	@Autowired
 	private UserCheck uc;
+	@Autowired
 	private ProjectService projectService;
 	@Autowired
 	private ProjectRepository projectRepository;
@@ -62,7 +63,7 @@ public class ProjectController {
 		if(!uc.loggedAndAdmin(request, response)) {
 			return;
 		}
-		if(projectRepository.getOne(id)==null) {
+		if(!projectRepository.findById(id).isPresent()) {
 			System.out.println("invalid project id");
 			response.setStatus(404);
 			return;
