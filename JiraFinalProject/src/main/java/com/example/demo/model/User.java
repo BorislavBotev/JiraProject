@@ -42,11 +42,11 @@ public class User {
 	
 	private boolean isAdmin;
 	
-	@Transient //@OneToMany
-	private Set<Issue> asignedIssues;
+//	@Transient //@OneToMany
+//	private Set<Issue> asignedIssues;
 	
 	
 //	@ManyToMany(mappedBy = "users")
-	@Transient 
-	private Set<Project> projects=new HashSet<>();
+//	@Transient 
+//	private Set<Project> projects=new HashSet<>();
 }

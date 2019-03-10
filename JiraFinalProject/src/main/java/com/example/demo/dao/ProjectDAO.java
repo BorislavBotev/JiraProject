@@ -26,15 +26,9 @@ import com.example.demo.repositories.UserRepository;
 @Component
 public class ProjectDAO {
 	@Autowired
-	private ProjectRepository projectRepository;
-	@Autowired
 	private UserDAO userDao;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private IssueRepository issueRepository;
-	@Autowired
-	private SprintRepository sprintRepository;
+	private ProjectRepository projectRepository;
 	@Autowired
 	private ComponentRepository componentRepository;
 	
@@ -48,29 +42,12 @@ public class ProjectDAO {
 		Project p=new Project(null,project.getName());
 		projectRepository.save(p);
 		User user=userDao.getCurrentUser(request);
-		user.getProjects().add(p);
+		//user.getProjects().add(p);
 		
 	}
 	public List<ViewComponentDto> listAllComponentsFromproject(Long id){
 		return componentRepository.findAll().stream()
 		.filter(c->c.getProject().getId().equals(id)).map(ViewComponentDto::new).collect(Collectors.toList());
-		
-	}
-	@Transactional
-	public void deleteProjectById(Long id) {
-		issueRepository.findAll().stream().
-		filter(i->i.getProject().getId().equals(id)).
-		forEach(i->issueRepository.deleteById(i.getId()));
-		
-		componentRepository.findAll().stream().
-		filter(c->c.getProject().getId().equals(id)).
-		forEach(c->componentRepository.deleteById(c.getId()));
-		
-		sprintRepository.findAll().stream().
-		filter(s->s.getProject().getId().equals(id)).
-		forEach(s->sprintRepository.deleteById(s.getId()));
-		
-		projectRepository.deleteById(id);	
 		
 	}
 	

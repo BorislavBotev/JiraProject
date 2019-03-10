@@ -20,8 +20,8 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler{
         System.out.println("fhfghfghfgh");
         return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.UNAUTHORIZED);
     }
-	@ExceptionHandler({UserException.class})
-    public  ResponseEntity<String> handleUserException(UserException e) {
+	@ExceptionHandler({Exception.class})
+    public  ResponseEntity<String> handleUserException(Exception e) {
         System.out.println("asddddddddd");
         return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.UNAUTHORIZED);
     }

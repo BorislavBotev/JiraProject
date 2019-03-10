@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.CreateSprintDTO;
 import com.example.demo.exceptions.InvalidDateException;
 import com.example.demo.exceptions.InvalidNameException;
+import com.example.demo.exceptions.InvalidSprintException;
 import com.example.demo.exceptions.InvalidStatusexception;
 import com.example.demo.model.Project;
 import com.example.demo.model.Sprint;
@@ -26,8 +27,6 @@ public class SprintService {
 		private ProjectRepository projectRepository;
 		@Autowired
 		private StatusRepository statusRepository;
-		@Autowired
-		private IssueRepository issueRepository;
 		
 		public void createSprint(CreateSprintDTO sprint, Long id) throws InvalidNameException, InvalidDateException, InvalidStatusexception {
 			LocalDate date=sprint.getEndDate();
@@ -51,12 +50,7 @@ public class SprintService {
 			sp.setStatus(status);
 			sp.setProject(project);
 			System.out.println(sp);
-			//project.setSprints(Arrays.asList(sp));
 			sprintRepository.save(sp);
 		}
-		
-		
-
-	
 	
 }

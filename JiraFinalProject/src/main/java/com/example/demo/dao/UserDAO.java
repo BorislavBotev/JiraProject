@@ -46,7 +46,7 @@ public class UserDAO {
 		return userRepository.findAll().stream().filter(u->u.getId().equals(id)).findAny().get();
 	}
 	
-	public Long createNewUser(AddUserDTO newUser) throws SQLException, UserException {
+	public void createNewUser(AddUserDTO newUser) throws SQLException, UserException {
 		PreparedStatement ps = userTemplate.getDataSource().getConnection().prepareStatement(createUserQuery);
 		String email = newUser.getEmail();
 		String username = newUser.getUsername();
@@ -74,9 +74,7 @@ public class UserDAO {
 		ps.setString(4, password);
 		ps.setBoolean(5, newUser.isAdmin());
 		ps.executeUpdate();
-		Long userID = (long) Statement.RETURN_GENERATED_KEYS;
 		ps.close();
-		return userID;
 	}
 	
 

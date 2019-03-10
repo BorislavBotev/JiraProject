@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.ComponentDAO;
 import com.example.demo.dao.SprintDAO;
+import com.example.demo.dto.CompleteSprintDTO;
 import com.example.demo.dto.CreateSprintDTO;
 import com.example.demo.exceptions.InvalidDateException;
 import com.example.demo.exceptions.InvalidNameException;
@@ -38,13 +40,13 @@ public class SprintController {
 	@PostMapping("projects/{id}/createSprint")
 	public void createNewSprint(@PathVariable Long id,@RequestBody CreateSprintDTO sprint,
 			HttpServletRequest request,HttpServletResponse response) {
-		System.out.println("hiiiiiiiiiiiiii");
-		if(!usercheck.loggedAndAdmin(request, response)) {
+		
+		if(!usercheck.isLoggedIn(request, response)) {
 			return;
 		}	
 		if(projectRepository.getOne(id)==null) {
 			System.out.println("invalid project id");
-			response.setStatus(400);
+			response.setStatus(404);
 			return;
 		}
 		try {
@@ -59,14 +61,14 @@ public class SprintController {
 	@DeleteMapping("project/{projectId}/sprint/delete/{sprintId}")
 	public void deleteSprint(@PathVariable Long projectId, @PathVariable Long sprintId,
 			HttpServletResponse response, HttpServletRequest request) {
-		if(!usercheck.isLoggedIn(request, response)) {
+		if(!usercheck.loggedAndAdmin(request, response)) {
 			return;
 		}
 		if(!projectRepository.findById(projectId).isPresent()) {
 			try {
-				response.sendError(400, "Invalid project id");
+				response.sendError(404, "Invalid project id");
 			} catch (IOException e) {
-				response.setStatus(400);
+				response.setStatus(404);
 				e.printStackTrace();
 			}
 		}
@@ -79,5 +81,28 @@ public class SprintController {
 				response.setStatus(400);
 			}
 		}
+	}
+	@PutMapping("project/{projectId}/sprint/complete/{sprintId}")
+	public CompleteSprintDTO completeSprint(@PathVariable Long projectId, @PathVariable Long sprintId,
+			HttpServletResponse response, HttpServletRequest request) {
+		if(!usercheck.loggedAndAdmin(request, response)) {
+			return null;
+		}
+		if(!projectRepository.findById(projectId).isPresent()) {
+			try {
+				response.sendError(404, "Invalid project id");
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+		}
+		try {
+			return sprintDao.completeSprint(sprintId);
+		} catch (InvalidSprintException e) {
+			response.setStatus(404);			
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

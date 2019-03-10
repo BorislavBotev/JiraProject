@@ -22,6 +22,7 @@ import com.example.demo.dto.CreateProjectDTO;
 import com.example.demo.dto.ViewComponentDto;
 import com.example.demo.exceptions.ProjectException;
 import com.example.demo.repositories.ProjectRepository;
+import com.example.demo.service.ProjectService;
 
 @RestController
 public class ProjectController {
@@ -29,6 +30,7 @@ public class ProjectController {
 	private ProjectDAO projectDao;
 	@Autowired
 	private UserCheck uc;
+	private ProjectService projectService;
 	@Autowired
 	private ProjectRepository projectRepository;
 	@PostMapping("/createProject")
@@ -50,7 +52,7 @@ public class ProjectController {
 		}
 		if(projectRepository.getOne(id)==null) {
 			System.out.println("invalid project id");
-			response.setStatus(400);
+			response.setStatus(404);
 			return null;
 		}
 		return projectDao.listAllComponentsFromproject(id);
@@ -62,10 +64,10 @@ public class ProjectController {
 		}
 		if(projectRepository.getOne(id)==null) {
 			System.out.println("invalid project id");
-			response.setStatus(400);
+			response.setStatus(404);
 			return;
 		}
-		projectDao.deleteProjectById(id);
+		projectService.deleteProjectById(id);
 	}
 	
 }
