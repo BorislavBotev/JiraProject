@@ -35,7 +35,7 @@ public class UserDAO {
 								.filter(u->u.getUsername().equals(user.getUsername()))
 								.findFirst()
 								.get();
-		if(passwordVerification(user.getPassword(), foundUser.getPassword())) {
+		if(user.getPassword()!=null && passwordVerification(user.getPassword(), foundUser.getPassword())) {
 			return foundUser;
 		}
 		throw new UserException("Wrong username or password!");

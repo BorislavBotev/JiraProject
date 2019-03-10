@@ -45,7 +45,13 @@ public class WorklogController {
 		User currentUser = userDao.getCurrentUser(request);
 		try {
 			worklogService.addWorklog(currentUser, worklog, projectId, issueId);
-		} catch (ProjectException | IssueException | WorklogException e) {
+		} catch (ProjectException | IssueException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (WorklogException e) {
 			try {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 			} catch (IOException e1) {

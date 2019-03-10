@@ -19,11 +19,7 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler{
     public  ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
         return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.NOT_FOUND);
     }
-//	@ExceptionHandler({Exception.class})
-//    public  ResponseEntity<String> handleUserException(Exception e) {
-//        System.out.println("asddddddddd");
-//        return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.UNAUTHORIZED);
-//	
+
 	@ExceptionHandler({Exception.class})
     public  ResponseEntity<String> handleAllException(UserException e) {
         return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.BAD_REQUEST);
