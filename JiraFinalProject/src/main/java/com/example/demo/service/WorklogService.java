@@ -17,6 +17,7 @@ import com.example.demo.dto.WorklogIssueStatisticsDTO;
 import com.example.demo.dto.WorklogUserStatisticsDTO;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.exceptions.ProjectException;
+import com.example.demo.exceptions.UserException;
 import com.example.demo.exceptions.WorklogException;
 import com.example.demo.model.Issue;
 import com.example.demo.model.User;
@@ -30,6 +31,7 @@ import com.example.demo.repositories.WorklogRepository;
 public class WorklogService {
 	Comparator<WorklogIssueStatisticsDTO> issueHourComparator = (i1,i2) -> i2.getTotalHoursSpent() - i1.getTotalHoursSpent();
 	Comparator<WorklogUserStatisticsDTO> userHourComparator = (u1,u2) -> u2.getTotalHoursSpent() - u1.getTotalHoursSpent();
+	Comparator<WorklogDTO> dateTimeComparator = (w1,w2) -> w1.getLogDateTime().compareTo(w2.getLogDateTime());
 	
 	@Autowired
 	private WorklogRepository worklogRepository;
@@ -60,6 +62,12 @@ public class WorklogService {
 	}
 	
 	
+	/**
+	 * Get all worklog of all issue in project sorted by log date 
+	 * @param projectId - ID of project in database
+	 * @return - list of Worklog DTO objects
+	 * @throws ProjectException - when project is not present in database
+	 */
 	public List<WorklogDTO> getWorklogOfProject(long projectId) throws ProjectException {
 		if(!projectRepository.findById(projectId).isPresent()) {
 			throw new ProjectException("Project Not Found!");
@@ -68,10 +76,19 @@ public class WorklogService {
 				.filter(wl -> wl.getIssue().getProject().getId() == projectId)
 				.map(wl -> new WorklogDTO(wl.getId(), wl.getUser().getUsername(), wl.getIssue().getSummary(),
 							wl.getDescription(), wl.getHoursSpent(), wl.getHoursRemaining(), wl.getLogDateTime()))
+				.sorted(dateTimeComparator)
 				.collect(Collectors.toList());
 	}
 	
 	
+	/**
+	 * Get all worklog of issue sorted by log date
+	 * @param projectId - ID of project in database
+	 * @param issueId - ID of issue in database
+	 * @return - list of Worklog DTO objects
+	 * @throws ProjectException - when project is not present in database
+	 * @throws IssueException - when issue is not present in database
+	 */
 	public List<WorklogDTO> getWorklogOfIssue(long projectId, long issueId) throws ProjectException, IssueException {
 		if(!projectRepository.findById(projectId).isPresent()) {
 			throw new ProjectException("Project Not Found!");
@@ -84,19 +101,35 @@ public class WorklogService {
 				.filter(wl -> wl.getIssue().getId() == issueId)
 				.map(wl -> new WorklogDTO(wl.getId(), wl.getUser().getUsername(), wl.getIssue().getSummary(),
 							wl.getDescription(), wl.getHoursSpent(), wl.getHoursRemaining(), wl.getLogDateTime()))
+				.sorted(dateTimeComparator)
 				.collect(Collectors.toList());
 	}
 	
 	
-	public List<WorklogDTO> getWorklogOfCurrentUser(long userId) {
+	/**
+	 * Get all worklog of user sorted by log date
+	 * @param userId - ID of user in database
+	 * @return - list of Worklog DTO objects
+	 * @throws UserException - when user is not present in database
+	 */
+	public List<WorklogDTO> getWorklogOfUser(long userId) throws UserException {
+		if(!userRepository.findById(userId).isPresent()) {
+			throw new UserException("User Not Found!");
+		}
 		return worklogRepository.findAll().stream()
 				.filter(wl -> wl.getUser().getId() == userId)
 				.map(wl -> new WorklogDTO(wl.getId(), wl.getUser().getUsername(), wl.getIssue().getSummary(),
 							wl.getDescription(), wl.getHoursSpent(), wl.getHoursRemaining(), wl.getLogDateTime()))
+				.sorted(dateTimeComparator)
 				.collect(Collectors.toList());
 	}
 	
 	
+	/**
+	 * Get worklog statistics of hours spent for each issue, sorted in decreasing order by spent hours
+	 * 
+	 * @return - Set of WorklogIssueStatistics DTO objects
+	 */
 	public Set<WorklogIssueStatisticsDTO> getWorklogIssueStatistics() {
 		Map<Issue,Integer> issueTotalSpentHours = new HashMap<Issue, Integer>();
 		
@@ -116,6 +149,11 @@ public class WorklogService {
 	}
 	
 	
+	/**
+	 * Get worklog statistics of loged spent hours by each user, sorted in decreasing order by spent hours
+	 * 
+	 * @return - Set of WorklogUserStatistics DTO objects
+	 */
 	public Set<WorklogUserStatisticsDTO> getWorklogUserStatistics() {
 		Map<User,Integer> userTotalSpentHours = new HashMap<User, Integer>();
 		
@@ -135,6 +173,10 @@ public class WorklogService {
 	}
 	
 	
+	/**
+	 * @param worklogId - ID of worklog object in database
+	 * @throws WorklogException - when worklog object is not present in database
+	 */
 	public void deleteWorklog(long worklogId) throws WorklogException {
 		if(!worklogRepository.findById(worklogId).isPresent()) {
 			throw new WorklogException("Worklog Not Found!");

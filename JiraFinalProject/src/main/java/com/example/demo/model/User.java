@@ -2,17 +2,12 @@ package com.example.demo.model;
 
 
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.Data;
 import lombok.ToString;
@@ -41,12 +36,4 @@ public class User {
 	private String password;
 	
 	private boolean isAdmin;
-	
-//	@Transient //@OneToMany
-//	private Set<Issue> asignedIssues;
-	
-	
-//	@ManyToMany(mappedBy = "users")
-//	@Transient 
-//	private Set<Project> projects=new HashSet<>();
 }

@@ -52,11 +52,10 @@ public class SprintService {
 			sp.setName(sprint.getName());
 			sp.setStartDate(sprint.getStartDate());
 			sp.setEndDate(sprint.getEndDate());
-			System.out.println(sprint.getStatusId());
-			StatusModel status=statusRepository.getOne(sprint.getStatusId());
-			if(status==null) {
+			if(!statusRepository.findById(sprint.getStatusId()).isPresent()) {
 				throw new InvalidStatusexception("invalid status");
 			}
+			StatusModel status = statusRepository.findById(sprint.getStatusId()).get();
 			sp.setStatus(status);
 			sp.setProject(project);
 			sp.setUser(user);

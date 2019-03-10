@@ -37,7 +37,6 @@ public class Component {
 	@Column(name = "component_name")
 	private String name;
 
-	
 	@Column(name = "description")
 	private String description;
 	
@@ -45,9 +44,7 @@ public class Component {
 	@JoinColumn(name = "project_id")
 	private Project project;
 	
-//	@Transient //@OneToMany
-//	private List<Issue> issues=new ArrayList<Issue>();
-	
+
 	
 	public void setName(String name) throws InvalidComponentException {
 		if(name==null || name.trim().length()==0) {
@@ -63,6 +60,4 @@ public class Component {
 			this.description=description;
 		}
 	}
-	
-	
 }

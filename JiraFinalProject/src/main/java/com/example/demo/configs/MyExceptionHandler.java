@@ -21,7 +21,7 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler{
     }
 
 	@ExceptionHandler({Exception.class})
-    public  ResponseEntity<String> handleAllException(UserException e) {
-        return new ResponseEntity<>(e.getMessage(),new HttpHeaders(),HttpStatus.BAD_REQUEST);
+    public  ResponseEntity<String> handleAllException(Exception e) {
+        return new ResponseEntity<>("Not Available!", new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

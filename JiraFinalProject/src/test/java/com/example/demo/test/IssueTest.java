@@ -91,7 +91,7 @@ public class IssueTest extends JiraFinalProjectApplicationTests {
 	@Test
 	public void deleteIssueTest() throws IssueException {
 		long oldSize = issueRepository.count();
-		issueDao.deleteIssueById(TEST_ISSUE_ID);
+		issueService.deleteIssueById(TEST_ISSUE_ID);
 		long newSize = issueRepository.count();
 		assertTrue(oldSize != newSize);
 	}

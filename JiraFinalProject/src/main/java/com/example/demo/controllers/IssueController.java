@@ -58,7 +58,12 @@ public class IssueController {
 		if(!usercheck.isLoggedIn(request, response)) {
 			return null;
 		}
-		return issueDao.getAssignedIssuesOverview(userDao.getCurrentUser(request).getId());
+		try {
+			return issueDao.getAssignedIssuesOverview(userDao.getCurrentUser(request).getId());
+		} catch (UserException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return null;
+		}
 	}
 	
 	@GetMapping("/issues/{id}")
@@ -193,10 +198,10 @@ public class IssueController {
 			return;
 		}
 		try {
-			issueDao.deleteIssueById(issueId);
+			issueService.deleteIssueById(issueId);
 		} catch (IssueException e) {
 			try {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

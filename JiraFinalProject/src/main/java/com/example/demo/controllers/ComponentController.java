@@ -105,7 +105,7 @@ public class ComponentController {
 			return componentDao.showInfoById(componentId);
 		} catch (InvalidComponentException e) {
 			try {
-				response.sendError(400, e.getMessage());
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			} catch (IOException e1) {
 				response.setStatus(400);
 				e1.printStackTrace();

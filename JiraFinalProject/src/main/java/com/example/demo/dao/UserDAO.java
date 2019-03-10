@@ -41,11 +41,23 @@ public class UserDAO {
 		throw new UserException("Wrong username or password!");
 	}
 
+	
+	/**
+	 * Return current user from HTTP Session
+	 * @param request - HTTPServletRequest
+	 * @return - User
+	 */
 	public User getCurrentUser(HttpServletRequest request) {
 		Long id=(Long) request.getSession().getAttribute("userId");
 		return userRepository.findAll().stream().filter(u->u.getId().equals(id)).findAny().get();
 	}
 	
+	
+	/**
+	 * Create new user and save it to database with crypted password with SHA-1
+	 * @param newUser - AddUserDTO object
+	 * @throws UserException - When username or email are already used.
+	 */
 	public void createNewUser(AddUserDTO newUser) throws SQLException, UserException {
 		PreparedStatement ps = userTemplate.getDataSource().getConnection().prepareStatement(createUserQuery);
 		String email = newUser.getEmail();
@@ -77,9 +89,14 @@ public class UserDAO {
 		ps.close();
 	}
 	
-
+	
+	/**
+	 * Change password, crypted with SHA-1
+	 * @param newPassword - DTO which contains old password and new password confirmed two times
+	 * @throws UserException - incorrect data input
+	 */
 	public void changePassword(ChangePasswordDTO newPassword, User user) throws UserException {
-		if(newPassword.getOldPassword() == null || newPassword.getNewPassword() == null || newPassword.getNewPasswordConfirm() == null) {
+		if(user == null || newPassword.getOldPassword() == null || newPassword.getNewPassword() == null || newPassword.getNewPasswordConfirm() == null) {
 			throw new UserException("Invalid Data!");
 		}
 		if(!passwordVerification(newPassword.getOldPassword(), user.getPassword())) {
@@ -95,6 +112,7 @@ public class UserDAO {
 		user.setPassword(newPass);
 		userRepository.save(user);
 	}
+	
 	
 	public boolean passwordVerification(String loginPass, String cryptedPass){
 		return DigestUtils.shaHex(loginPass).equals(cryptedPass);

@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.dto.AddIssueDTO;
@@ -27,6 +30,7 @@ import com.example.demo.repositories.SprintRepository;
 import com.example.demo.repositories.StatusRepository;
 import com.example.demo.repositories.TypeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.repositories.WorklogRepository;
 
 @Service
 public class IssueService {
@@ -47,8 +51,16 @@ public class IssueService {
 	private UserRepository userRepository;
 	@Autowired
 	private ComponentRepository componentRepository;
+	@Autowired
+	private WorklogRepository worklogRepository;
 	
 	
+	/**
+	 * Optional Fields/can be null/:
+	 * Sprint, Component, Description
+	 * 
+	 * @throws Exception - incorrect input data
+	 */
 	public void addIssue(AddIssueDTO newIssue) throws Exception {
 		Issue issue = new Issue();
 		LocalDateTime createDate = LocalDateTime.now();
@@ -83,6 +95,13 @@ public class IssueService {
 	}
 	
 	
+	/**
+	 * Change status of issue
+	 * @param issueId - ID of issue object in database
+	 * @param newStatus - DTO which contains the ID of new status object in database
+	 * @throws IssueException - when issue is not present in database
+	 * @throws StatusException - when status is not present in database
+	 */
 	public void changeIssueStatus(Long issueId, EditIssueDTO newStatus) throws IssueException, StatusException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
@@ -98,6 +117,13 @@ public class IssueService {
 	}
 
 	
+	/**
+	 * Change type of issue
+	 * @param issueId - ID of issue object in database
+	 * @param newType - DTO which contains the ID of new type object in database
+	 * @throws IssueException - when issue is not present in database
+	 * @throws TypeException - when type is not present in database
+	 */
 	public void changeIssueType(Long issueId, EditIssueDTO newType) throws IssueException, TypeException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
@@ -113,6 +139,13 @@ public class IssueService {
 	}
 	
 	
+	/**
+	 * Change Priority of Issue
+	 * @param issueId - ID of issue object in database
+	 * @param newPriority - DTO which contains the ID of new priority object in database
+	 * @throws IssueException - when issue is not present in database
+	 * @throws PriorityException - when priority is not present in database
+	 */
 	public void changeIssuePriority(Long issueId, EditIssueDTO newPriority) throws IssueException, PriorityException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
@@ -127,6 +160,14 @@ public class IssueService {
 		issueRepository.save(issue);
 	}
 	
+	
+	/**
+	 * Change assignee user of issue
+	 * @param issueId - ID of issue object in database
+	 * @param newAsignee - DTO which contains the ID of new assignee user in database
+	 * @throws IssueException - when issue is not present in database
+	 * @throws UserException - when user is not present in database
+	 */
 	public void changeIssueAsignee(Long issueId, ChangeUserDTO newAsignee) throws IssueException, UserException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
@@ -140,6 +181,15 @@ public class IssueService {
 		issueRepository.save(issue);
 	}
 	
+	
+	/**
+	 * Change sprint of issue
+	 * Can be unassigned to sprint/null/
+	 * @param issueId - ID of issue object in database
+	 * @param newSprint - DTO which contains the ID of new sprint object in database
+	 * @throws IssueException - when issue is not present in database
+	 * @throws SprintException - when sprint is not present in database
+	 */
 	public void changeIssueSprint(Long issueId, EditIssueDTO newSprint) throws IssueException, SprintException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
@@ -157,6 +207,13 @@ public class IssueService {
 		issueRepository.save(issue);
 	}
 	
+	
+	/**
+	 * Can be without description/null/
+	 * @param issueId - ID of issue object in database
+	 * @param description - DTO which contains description to be added
+	 * @throws IssueException - when issue is not present in database
+	 */
 	public void addDescription (Long issueId, DescriptionDTO description) throws IssueException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
@@ -167,6 +224,20 @@ public class IssueService {
 	}
 	
 	
+	/**
+	 * Delete issue together with all of its worklog
+	 * /Transactional method/
+	 * @param issueId - ID of issue object to be deleted in database
+	 * @throws IssueException - when issue is not present in database
+	 */
+	@Transactional
+	public void deleteIssueById(long issueId) throws IssueException {
+		if(!issueRepository.findById(issueId).isPresent()) {
+			throw new IssueException("Issue Not Found!");
+		}
+		worklogRepository.findAllByIssueId(issueId).forEach(wl -> worklogRepository.deleteById(wl.getId()));
+		issueRepository.deleteById(issueId);
+	}
 	
 	
 	private boolean isValidDescription(AddIssueDTO newIssue) {
