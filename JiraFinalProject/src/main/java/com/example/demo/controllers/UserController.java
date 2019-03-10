@@ -59,9 +59,7 @@ public class UserController {
 		try {
 			userDao.createNewUser(newUser);
 		} catch (SQLException | UserException e) {
-			System.out.println(e.getMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			e.printStackTrace();
 		}
 	}
 	

@@ -56,7 +56,7 @@ public class UserDAO {
 			throw new UserException("Invalid Email!");
 		}
 		if((userRepository.findAll().stream().filter(user -> user.getEmail().equals(email)).count()) > 0) {
-			throw new UserException("Email is already taken!");
+			throw new UserException("Email is already used!");
 		}
 		if(email==null || email.trim().length()==0) {
 			throw new UserException("Invalid username!");
