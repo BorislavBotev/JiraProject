@@ -58,7 +58,12 @@ public class IssueController {
 		if(!usercheck.isLoggedIn(request, response)) {
 			return null;
 		}
-		return issueDao.getAssignedIssuesOverview(userDao.getCurrentUser(request).getId());
+		try {
+			return issueDao.getAssignedIssuesOverview(userDao.getCurrentUser(request).getId());
+		} catch (UserException e) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return null;
+		}
 	}
 	
 	@GetMapping("/issues/{id}")

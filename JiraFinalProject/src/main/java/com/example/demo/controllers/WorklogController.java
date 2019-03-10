@@ -21,6 +21,7 @@ import com.example.demo.dto.WorklogIssueStatisticsDTO;
 import com.example.demo.dto.WorklogUserStatisticsDTO;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.exceptions.ProjectException;
+import com.example.demo.exceptions.UserException;
 import com.example.demo.exceptions.WorklogException;
 import com.example.demo.model.User;
 import com.example.demo.service.WorklogService;
@@ -103,7 +104,16 @@ public class WorklogController {
 			return null;
 		}
 		long userId = userDao.getCurrentUser(request).getId();
-		return worklogService.getWorklogOfCurrentUser(userId);
+		try {
+			return worklogService.getWorklogOfUser(userId);
+		} catch (UserException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return null;
+		}
 	}
 	
 	

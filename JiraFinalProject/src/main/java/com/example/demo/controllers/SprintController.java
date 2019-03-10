@@ -31,6 +31,7 @@ import com.example.demo.service.SprintService;
 
 @RestController
 public class SprintController {
+	
 	@Autowired
 	private ProjectRepository projectRepository;
 	@Autowired
@@ -41,6 +42,8 @@ public class SprintController {
 	private SprintDAO sprintDao;
 	@Autowired
 	private UserDAO userDao;
+	
+	
 	@PostMapping("projects/{id}/createSprint")
 	public void createNewSprint(@PathVariable Long id,@RequestBody CreateSprintDTO sprint,
 			HttpServletRequest request,HttpServletResponse response) {

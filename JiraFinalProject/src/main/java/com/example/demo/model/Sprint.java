@@ -39,9 +39,6 @@ public class Sprint {
 	@Column(name = "end_date")
 	private LocalDate endDate;
 	
-	@Transient //@OneToMany
-	private Set<Issue> issues;
-	
 	@ManyToOne
 	@JoinColumn(name = "status_id")
 	private StatusModel status;
@@ -53,7 +50,6 @@ public class Sprint {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
 	
 
 	public void setName(String name) throws InvalidNameException {

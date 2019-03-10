@@ -34,6 +34,8 @@ public class ProjectController {
 	private ProjectService projectService;
 	@Autowired
 	private ProjectRepository projectRepository;
+	
+	
 	@PostMapping("/createProject")
 	public void createNewProject(@RequestBody CreateProjectDTO project,HttpServletRequest request,HttpServletResponse response) {
 		if(!uc.loggedAndAdmin(request, response)) {

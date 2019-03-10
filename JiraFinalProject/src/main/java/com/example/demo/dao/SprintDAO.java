@@ -19,6 +19,7 @@ import com.example.demo.repositories.SprintRepository;
 import com.example.demo.repositories.UserRepository;
 @Component
 public class SprintDAO {
+	
 	@Autowired
 	private SprintRepository sprintRepository;
 	@Autowired
