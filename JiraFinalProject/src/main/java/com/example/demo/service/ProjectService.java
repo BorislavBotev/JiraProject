@@ -17,15 +17,16 @@ public class ProjectService {
 	@Autowired
 	private ProjectRepository projectRepository;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private IssueRepository issueRepository;
 	@Autowired
 	private SprintRepository sprintRepository;
 	@Autowired
 	private ComponentRepository componentRepository;
 	
-	
+	/**
+	 * Deleting project by id
+	 * @param id -Id of the project
+	 */
 	@Transactional
 	public void deleteProjectById(Long id) {
 		issueRepository.findAll().stream().

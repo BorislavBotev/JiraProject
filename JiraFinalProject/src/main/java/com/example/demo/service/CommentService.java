@@ -28,8 +28,16 @@ public class CommentService {
 	private UserRepository userRepository;
 	@Autowired
 	private CommentRepository commentRepository;
-	
-	public void addCommentToIssue(long issueId, long userId, AddCommentDTO newComment) throws IssueException, UserException, CommentException {
+	/**
+	 * Adds comment to an issue.Updates the issue. Gets the user who writes the comment.
+	 * @param issueId - Long
+	 * @param userId -Long
+	 * @param newComment - AddCommentDto
+	 * @throws IssueException
+	 * @throws UserException
+	 * @throws CommentException
+	 */
+	public void addCommentToIssue(Long issueId, Long userId, AddCommentDTO newComment) throws IssueException, UserException, CommentException {
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
 		}
@@ -50,23 +58,33 @@ public class CommentService {
 		comment.setCreateDate(updateDate);
 		commentRepository.save(comment);
 	}
-	
-	public List<CommentDTO> getIssueComments(long issueId) throws IssueException{
+	/**
+	 * Gets all comments from the database by a given issue id
+	 * 
+	 * @param issueId
+	 * @return List of comment dto objects
+	 * @throws IssueException
+	 */
+	public List<CommentDTO> getIssueComments(Long issueId) throws IssueException{
 		if(!issueRepository.findById(issueId).isPresent()) {
 			throw new IssueException("Issue Not Found!");
 		}
 		List<CommentDTO> comments = commentRepository.findAll().stream()
 			.filter(comment -> comment.getIssue().getId() == issueId)
-			.map(comment -> new CommentDTO(comment.getUser().getUsername(), comment.getText(), comment.getIssue().getSummary(), comment.getCreateDate()))
+			.map(comment -> new CommentDTO(comment.getId(),comment.getUser().getUsername(), comment.getText(), comment.getIssue().getSummary(), comment.getCreateDate()))
 			.sorted((c1,c2) -> c1.getDate().compareTo(c2.getDate()))
 			.collect(Collectors.toList());
 		return comments!=null ? comments : new LinkedList<CommentDTO>();
 	}
-
+	/**Gets all comments from a user,found by id from the database
+	 * 
+	 * @param userId
+	 * @return List of comment dto objects
+	 */
 	public List<CommentDTO> getCurrentUserComments(Long userId) {
 		List<CommentDTO> comments = commentRepository.findAll().stream()
 				.filter(comment -> comment.getUser().getId() == userId)
-				.map(comment -> new CommentDTO(comment.getUser().getUsername(), comment.getText(), comment.getIssue().getSummary(), comment.getCreateDate()))
+				.map(comment -> new CommentDTO(comment.getId(),comment.getUser().getUsername(), comment.getText(), comment.getIssue().getSummary(), comment.getCreateDate()))
 				.sorted((c1,c2) -> c1.getDate().compareTo(c2.getDate()))
 				.collect(Collectors.toList());
 		return comments!=null ? comments : new LinkedList<CommentDTO>();

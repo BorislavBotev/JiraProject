@@ -30,11 +30,18 @@ public class SprintService {
 		private ProjectRepository projectRepository;
 		@Autowired
 		private StatusRepository statusRepository;
-		
+		/**
+		 * Creates a new sprint in the project given by an id
+		 * 
+		 * @param sprint - CreateSprintDTO
+		 * @param id - Id of the project
+		 * @param user - the user creating the sprint
+		 * @throws InvalidNameException
+		 * @throws InvalidDateException
+		 * @throws InvalidStatusexception
+		 */
 		public void createSprint(CreateSprintDTO sprint, Long id,User user) throws InvalidNameException, InvalidDateException, InvalidStatusexception {
-			LocalDate date=sprint.getEndDate();
-			System.out.println(date);
-			
+		
 			Project project=projectRepository.findById(id).get();
 			Sprint sp=new Sprint();
 			boolean nameAlreadyexists=sprintRepository.findAll().stream().filter(s->s.getName().equals(sprint.getName()))
@@ -53,7 +60,6 @@ public class SprintService {
 			sp.setStatus(status);
 			sp.setProject(project);
 			sp.setUser(user);
-			System.out.println(sp);
 			sprintRepository.save(sp);
 		}
 	

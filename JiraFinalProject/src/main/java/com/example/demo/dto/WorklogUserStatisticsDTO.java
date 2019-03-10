@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 public class WorklogUserStatisticsDTO {
-	private long id;
+	private Long id;
 	private String username;
 	private int totalHoursSpent;
 }

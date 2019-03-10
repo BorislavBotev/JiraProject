@@ -55,7 +55,7 @@ public class ComponentController {
 			componentDao.createComponent(component,id);
 		} catch (InvalidComponentException e) {
 			try {
-				response.sendError(400, e.getMessage());
+				response.sendError(404, e.getMessage());
 				System.out.println(e.getMessage());
 			} catch (IOException e1) {
 				e1.printStackTrace();

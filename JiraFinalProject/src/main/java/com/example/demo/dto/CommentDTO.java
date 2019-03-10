@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 public class CommentDTO {
+	private Long id;
 	private String username;
 	private String text;
 	private String issueName;

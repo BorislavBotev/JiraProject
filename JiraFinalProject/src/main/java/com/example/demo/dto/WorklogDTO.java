@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 public class WorklogDTO {
-	private long id;
+	private Long id;
 	private String username;
 	private String issueName;
 	private String description;

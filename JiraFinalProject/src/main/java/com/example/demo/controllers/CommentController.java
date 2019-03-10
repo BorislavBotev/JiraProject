@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +53,13 @@ public class CommentController {
 		try {
 			return commentService.getIssueComments(issueId);
 		} catch (IssueException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			try {
+				response.sendError(404,e.getMessage());
+				return null;
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return null;
 		}
 	}

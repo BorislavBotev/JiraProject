@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 public class IssueOverviewDTO {
-	private long id;
+	private Long id;
 	private String summary;
 	private String projectName;
 	private String type;

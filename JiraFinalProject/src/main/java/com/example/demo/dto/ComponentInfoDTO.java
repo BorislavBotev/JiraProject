@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class ComponentInfoDTO {
+	private Long id;
 	private String name;
 	private String description;
 	private List<String> issueNames=new ArrayList<>();

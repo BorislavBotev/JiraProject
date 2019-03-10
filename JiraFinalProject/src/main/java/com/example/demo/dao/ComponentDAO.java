@@ -31,7 +31,12 @@ public class ComponentDAO {
 	@Autowired
 	private IssueRepository issueRepository;
 	
-	
+	/**
+	 * Creates a component by a given createComponentDTO object and an id of a project
+	 * @param component -CreateComponentDTO
+	 * @param id - Id of the project
+	 * @throws InvalidComponentException
+	 */
 	public void createComponent(CreateComponentDTO component,Long id) throws InvalidComponentException {
 		Project project=projectRepository.findById(id).get();
 		com.example.demo.model.Component c=new com.example.demo.model.Component();
@@ -45,6 +50,11 @@ public class ComponentDAO {
 		c.setProject(project);
 		componentRepository.save(c);
 	}
+	/**
+	 * Deletes component by a given id and also sets the issues component to null
+	 * @param componentId
+	 * @throws InvalidComponentException
+	 */
 	@Transactional
 	public void deleteComponentById(Long componentId) throws InvalidComponentException {
 		if(!componentRepository.findById(componentId).isPresent()) {
@@ -62,7 +72,13 @@ public class ComponentDAO {
 		forEach(i->i.setComponent(null));
 		componentRepository.deleteById(componentId);
 	}
-	@Transactional
+	
+	/**
+	 * Returns a dto containing the name,description and the names of all the issues in the component
+	 * @param componentId
+	 * @return ComponentInfoDto
+	 * @throws InvalidComponentException
+	 */
 	public ComponentInfoDTO showInfoById(Long componentId) throws InvalidComponentException {
 		if(!componentRepository.findById(componentId).isPresent()) {
 			throw new InvalidComponentException("No such component");
@@ -70,6 +86,7 @@ public class ComponentDAO {
 		ComponentInfoDTO dto=new ComponentInfoDTO();
 		com.example.demo.model.Component c=componentRepository.getOne(componentId);
 		dto.setName(c.getName());
+		dto.setId(c.getId());
 		if(c.getDescription()!=null) {
 			dto.setDescription(c.getDescription());
 		}

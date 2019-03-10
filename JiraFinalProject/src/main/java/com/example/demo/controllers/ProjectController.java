@@ -42,7 +42,7 @@ public class ProjectController {
 		}
 		if(project.getName()==null || project.getName().trim().length()==0) {
 			try {
-				response.sendError(404, "Project not found");
+				response.sendError(400, "Invalid name");
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -52,7 +52,11 @@ public class ProjectController {
 			projectDao.createProject(project, request);
 		} catch (ProjectException e) {
 			System.out.println(e.getMessage());
-			response.setStatus(400);
+			try {
+				response.sendError(404, e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	@GetMapping("project/{id}/components")

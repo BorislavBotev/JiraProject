@@ -26,6 +26,12 @@ public class SprintDAO {
 	@Autowired
 	private UserRepository userRepository;
 	
+	
+	/**
+	 * Deletes a sprint by a given id, also sets the issues sprint to null
+	 * @param sprintId
+	 * @throws InvalidSprintException
+	 */
 	@Transactional
 	public void deleteSprintById(Long sprintId) throws InvalidSprintException {
 		if(!sprintRepository.findById(sprintId).isPresent()) {
@@ -43,7 +49,13 @@ public class SprintDAO {
 		forEach(i->i.setSprint(null));
 		sprintRepository.deleteById(sprintId);
 	}
-
+	/**
+	 * Gives you the name,start date, the user who created the sprint, both finished and unfinished issues in the sprint
+	 * and sets the end date to the current time
+	 * @param sprintId
+	 * @return CompleteSprintDTO
+	 * @throws InvalidSprintException
+	 */
 	public CompleteSprintDTO completeSprint(Long sprintId) throws InvalidSprintException {
 		if(!sprintRepository.findById(sprintId).isPresent()) {
 			throw new InvalidSprintException("No such sprint");

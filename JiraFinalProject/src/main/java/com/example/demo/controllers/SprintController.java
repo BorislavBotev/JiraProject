@@ -71,9 +71,10 @@ public class SprintController {
 		}
 		if(!projectRepository.findById(projectId).isPresent()) {
 			try {
-				response.sendError(404, "Invalid project id");
+				response.sendError(404, "Project not found");
+				return;
 			} catch (IOException e) {
-				response.setStatus(404);
+				//presponse.setStatus(404);
 				e.printStackTrace();
 			}
 		}
@@ -81,9 +82,9 @@ public class SprintController {
 			sprintDao.deleteSprintById(sprintId);
 		} catch (InvalidSprintException e) {
 			try {
-				response.sendError(400, e.getMessage());
+				response.sendError(404, e.getMessage());
 			} catch (IOException e1) {
-				response.setStatus(400);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -97,7 +98,6 @@ public class SprintController {
 			try {
 				response.sendError(404, "Invalid project id");
 			} catch (IOException e) {
-				
 				e.printStackTrace();
 			}
 		}

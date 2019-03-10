@@ -16,6 +16,8 @@ import com.example.demo.repositories.UserRepository;
 public class UserCheck {
 	@Autowired
 	private UserRepository repository;
+	
+	
 	public boolean isLoggedIn(HttpServletRequest request,HttpServletResponse response) {
 		HttpSession session = request.getSession();
 	

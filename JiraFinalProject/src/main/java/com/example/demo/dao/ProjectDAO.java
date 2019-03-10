@@ -32,19 +32,28 @@ public class ProjectDAO {
 	@Autowired
 	private ComponentRepository componentRepository;
 	
-	
+	/**
+	 * Creates teacher by a given createProjectDTO and saving it in the Database
+	 * @param project - CreateProjectDTO 
+	 * @param request -HttpServletRequest
+	 * @return void
+	 * @throws ProjectException
+	 */
 	public void createProject(CreateProjectDTO project,HttpServletRequest request) throws ProjectException {
 		boolean nameAlreadyexists=projectRepository.findAll().stream().filter(u->u.getName().equals(project.getName()))
 				.findAny().isPresent();
-		if(project.getName().trim().length()==0 || nameAlreadyexists) {
-			throw new ProjectException("Invalid name");
+		if(nameAlreadyexists) {
+			throw new ProjectException("Project with this id already exists");
 		}
 		Project p=new Project(null,project.getName());
 		projectRepository.save(p);
-		User user=userDao.getCurrentUser(request);
-		//user.getProjects().add(p);
 		
 	}
+	/**
+	 * Get all components from a project
+	 * @param id - Id of the project the components are in
+	 * @return List of ViewComponentDto objects
+	 */
 	public List<ViewComponentDto> listAllComponentsFromproject(Long id){
 		return componentRepository.findAll().stream()
 		.filter(c->c.getProject().getId().equals(id)).map(ViewComponentDto::new).collect(Collectors.toList());
