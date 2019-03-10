@@ -42,6 +42,7 @@ public class ComponentDAO {
 		c.setProject(project);
 		componentRepository.save(c);
 	}
+	@Transactional
 	public void deleteComponentById(Long componentId) throws InvalidComponentException {
 		if(!componentRepository.findById(componentId).isPresent()) {
 			throw new InvalidComponentException("No such component");
