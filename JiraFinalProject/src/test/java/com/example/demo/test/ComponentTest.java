@@ -2,6 +2,7 @@ package com.example.demo.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,13 +29,23 @@ public class ComponentTest extends JiraFinalProjectApplicationTests{
 	
 	@Test
 	public void createComponent() throws InvalidComponentException {
-		CreateComponentDTO dto=new CreateComponentDTO("Test"+new Random().nextInt(10000),"Random");
-		long countBefore=componentRepository.count();
-		if(projectReposioty.count()!=0) {
+		CreateComponentDTO dto=new CreateComponentDTO("Test"+new Random().nextInt(10000),"Random 90000");
+		Long countBefore=componentRepository.count();
+		if(countBefore!=0) {
 			componentDao.createComponent(dto, projectReposioty.findAll().get(0).getId());
-			long countAfter=componentRepository.findAll().size();
+			long countAfter=componentRepository.count();
 			assertNotSame(countBefore, countAfter);
-			//componentRepository.delete(component);
+		}
+	}
+	@Test
+	public void deleteComponent() throws InvalidComponentException {
+		long countBefore=componentRepository.count();
+		if(countBefore!=0) {
+			Long id=componentRepository.findAll().stream().
+					filter(c->c.getDescription().equals("Random 90000")).findAny().get().getId();
+			componentDao.deleteComponentById(id);
+			long countAfter=componentRepository.count();
+			assertNotSame(countBefore, countAfter);
 		}
 	}
 	
