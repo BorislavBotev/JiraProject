@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.check.UserCheck;
 import com.example.demo.dao.ComponentDAO;
 import com.example.demo.dao.SprintDAO;
+import com.example.demo.dao.UserDAO;
 import com.example.demo.dto.CompleteSprintDTO;
 import com.example.demo.dto.CreateSprintDTO;
 import com.example.demo.exceptions.InvalidDateException;
@@ -24,6 +25,7 @@ import com.example.demo.exceptions.InvalidSprintException;
 import com.example.demo.exceptions.InvalidStatusexception;
 import com.example.demo.exceptions.IssueException;
 import com.example.demo.model.Sprint;
+import com.example.demo.model.User;
 import com.example.demo.repositories.ProjectRepository;
 import com.example.demo.service.SprintService;
 
@@ -37,6 +39,8 @@ public class SprintController {
 	private SprintService sprintService;
 	@Autowired
 	private SprintDAO sprintDao;
+	@Autowired
+	private UserDAO userDao;
 	@PostMapping("projects/{id}/createSprint")
 	public void createNewSprint(@PathVariable Long id,@RequestBody CreateSprintDTO sprint,
 			HttpServletRequest request,HttpServletResponse response) {
@@ -49,8 +53,9 @@ public class SprintController {
 			response.setStatus(404);
 			return;
 		}
+		User user=userDao.getCurrentUser(request);
 		try {
-			sprintService.createSprint(sprint,id);
+			sprintService.createSprint(sprint,id,user);
 		} catch (InvalidNameException | InvalidDateException | InvalidStatusexception e) {
 			System.out.println(e.getMessage());
 			response.setStatus(400);

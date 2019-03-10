@@ -59,6 +59,11 @@ public class Component {
 	public void setProject(Project project) {
 		this.project=project;
 	}
+	public void setDescription(String description) {
+		if(description!=null) {
+			this.description=description;
+		}
+	}
 	
 	
 }

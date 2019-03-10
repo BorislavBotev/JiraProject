@@ -30,12 +30,17 @@ public class ProjectController {
 	private ProjectDAO projectDao;
 	@Autowired
 	private UserCheck uc;
+	@Autowired
 	private ProjectService projectService;
 	@Autowired
 	private ProjectRepository projectRepository;
 	@PostMapping("/createProject")
 	public void createNewProject(@RequestBody CreateProjectDTO project,HttpServletRequest request,HttpServletResponse response) {
 		if(!uc.loggedAndAdmin(request, response)) {
+			return;
+		}
+		if(project.getName()==null || project.getName().trim().length()==0) {
+			response.setStatus(400);
 			return;
 		}
 		try {

@@ -28,7 +28,7 @@ public class ComponentDAO {
 	@Autowired
 	private IssueRepository issueRepository;
 	
-	@Transactional
+	
 	public void createComponent(CreateComponentDTO component,Long id) throws InvalidComponentException {
 		Project project=projectRepository.findById(id).get();
 		com.example.demo.model.Component c=new com.example.demo.model.Component();

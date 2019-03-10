@@ -3,6 +3,8 @@ package com.example.demo.service;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import com.example.demo.exceptions.InvalidStatusexception;
 import com.example.demo.model.Project;
 import com.example.demo.model.Sprint;
 import com.example.demo.model.StatusModel;
+import com.example.demo.model.User;
 import com.example.demo.repositories.IssueRepository;
 import com.example.demo.repositories.ProjectRepository;
 import com.example.demo.repositories.SprintRepository;
@@ -28,7 +31,7 @@ public class SprintService {
 		@Autowired
 		private StatusRepository statusRepository;
 		
-		public void createSprint(CreateSprintDTO sprint, Long id) throws InvalidNameException, InvalidDateException, InvalidStatusexception {
+		public void createSprint(CreateSprintDTO sprint, Long id,User user) throws InvalidNameException, InvalidDateException, InvalidStatusexception {
 			LocalDate date=sprint.getEndDate();
 			System.out.println(date);
 			
@@ -49,6 +52,7 @@ public class SprintService {
 			}
 			sp.setStatus(status);
 			sp.setProject(project);
+			sp.setUser(user);
 			System.out.println(sp);
 			sprintRepository.save(sp);
 		}
