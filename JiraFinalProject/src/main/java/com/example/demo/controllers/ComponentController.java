@@ -51,9 +51,12 @@ public class ComponentController {
 		if(!usercheck.loggedAndAdmin(request, response)) {
 			return;
 		}
-		if(projectRepository.getOne(projectId)==null) {
-			System.out.println("invalid project id");
-			response.setStatus(400);
+		if(!projectRepository.findById(projectId).isPresent()) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Project Not Found!");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		try {
@@ -73,9 +76,12 @@ public class ComponentController {
 		if(!usercheck.isLoggedIn(request, response)) {
 			return null;
 		}
-		if(projectRepository.getOne(projectId)==null) {
-			System.out.println("invalid project id");
-			response.setStatus(400);
+		if(!projectRepository.findById(projectId).isPresent()) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Project Not Found!");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
 		try {

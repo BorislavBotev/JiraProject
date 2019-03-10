@@ -51,7 +51,7 @@ public class ProjectController {
 		if(!uc.isLoggedIn(request, response)) {
 			return null;
 		}
-		if(projectRepository.getOne(id)==null) {
+		if(!projectRepository.findById(id).isPresent()) {
 			System.out.println("invalid project id");
 			response.setStatus(404);
 			return null;
