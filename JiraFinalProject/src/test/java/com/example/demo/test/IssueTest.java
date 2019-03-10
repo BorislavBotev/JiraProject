@@ -1,7 +1,6 @@
 package com.example.demo.test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -41,6 +40,7 @@ public class IssueTest extends JiraFinalProjectApplicationTests {
 	public void connectionsTest() {
 		assertNotNull(issueRepository);
 		assertNotNull(issueDao);
+		assertNotNull(issueService);
 	}
 
 	@Test
