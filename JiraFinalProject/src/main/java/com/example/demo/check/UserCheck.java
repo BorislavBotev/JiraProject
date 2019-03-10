@@ -1,5 +1,7 @@
 package com.example.demo.check;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,8 +20,13 @@ public class UserCheck {
 		HttpSession session = request.getSession();
 	
 		if (session.getAttribute("userId") == null) {
-			response.setStatus(401);
-			return false;
+			try {
+				response.sendError(401, "Please log in first");
+				return false;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 		return true;
 	}

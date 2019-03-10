@@ -1,5 +1,8 @@
 package com.example.demo.dao;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -14,6 +17,7 @@ import com.example.demo.dto.ComponentInfoDTO;
 import com.example.demo.dto.CreateComponentDTO;
 import com.example.demo.exceptions.InvalidComponentException;
 import com.example.demo.exceptions.InvalidSprintException;
+import com.example.demo.model.Issue;
 import com.example.demo.model.Project;
 import com.example.demo.repositories.ComponentRepository;
 import com.example.demo.repositories.IssueRepository;
@@ -70,15 +74,16 @@ public class ComponentDAO {
 		if(c.getDescription()!=null) {
 			dto.setDescription(c.getDescription());
 		}
-		if(issueRepository.findAll().stream().filter(i->i.getComponent().getId().equals(componentId)).findFirst().isPresent()) {
-			issueRepository.findAll().stream().filter(i->{
-				if(i.getComponent()==null) {
-					return false;
-				}
-					return i.getComponent().getId().equals(componentId);
-				
-			}).
-			forEach(i->dto.addIssueName(i.getSummary()));
+		List<Issue> issues=issueRepository.findAll().stream().filter(i->
+		{
+			if(i.getComponent()==null) {
+			return false;
+			}
+			return i.getComponent().getId().equals(componentId);
+			})
+				.collect(Collectors.toList());
+		if(issues!=null && issues.size()!=0)	{
+			issues.forEach(i->dto.addIssueName(i.getSummary()));
 		}
 		return dto;
 	}

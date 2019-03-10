@@ -68,7 +68,7 @@ public class ComponentController {
 		if(!usercheck.loggedAndAdmin(request, response)) {
 			return;
 		}
-		if(projectRepository.getOne(projectId)==null) {
+		if(!projectRepository.findById(projectId).isPresent()) {
 			System.out.println("invalid project id");
 			response.setStatus(400);
 			return;

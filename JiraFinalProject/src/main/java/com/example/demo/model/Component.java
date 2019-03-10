@@ -41,13 +41,12 @@ public class Component {
 	@Column(name = "description")
 	private String description;
 	
-	
 	@ManyToOne
 	@JoinColumn(name = "project_id")
 	private Project project;
 	
-	@Transient //@OneToMany
-	private List<Issue> issues=new ArrayList<Issue>();
+//	@Transient //@OneToMany
+//	private List<Issue> issues=new ArrayList<Issue>();
 	
 	
 	public void setName(String name) throws InvalidComponentException {
