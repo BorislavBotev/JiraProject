@@ -39,6 +39,10 @@ public class ProjectController {
 		if(!uc.loggedAndAdmin(request, response)) {
 			return;
 		}
+		if(project.getName()==null || project.getName().trim().length()==0) {
+			response.setStatus(400);
+			return;
+		}
 		try {
 			projectDao.createProject(project, request);
 		} catch (ProjectException e) {

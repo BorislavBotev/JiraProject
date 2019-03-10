@@ -33,16 +33,33 @@ public class ComponentController {
 		if(!usercheck.loggedAndAdmin(request, response)) {
 			return;
 		}
-		if(projectRepository.getOne(id)==null) {
-			System.out.println("invalid project id");
-			response.setStatus(400);
-			return;
+		if(!projectRepository.findById(id).isPresent()) {
+			try {
+				response.sendError(400, "Invalid project id");
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
+		if(component.getName()==null || component.getName().trim().length()==0) {
+			try {
+				response.sendError(400, "Invalid name");
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		try {
 			componentDao.createComponent(component,id);
 		} catch (InvalidComponentException e) {
-			response.setStatus(400);
-			System.out.println(e.getMessage());
+			try {
+				response.sendError(400, e.getMessage());
+				System.out.println(e.getMessage());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	@DeleteMapping("project/{projectId}/component/delete/{componentId}")
