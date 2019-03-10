@@ -72,8 +72,8 @@ public class SprintController {
 		if(!projectRepository.findById(projectId).isPresent()) {
 			try {
 				response.sendError(404, "Invalid project id");
+				return;
 			} catch (IOException e) {
-				response.setStatus(404);
 				e.printStackTrace();
 			}
 		}
@@ -83,7 +83,7 @@ public class SprintController {
 			try {
 				response.sendError(400, e.getMessage());
 			} catch (IOException e1) {
-				response.setStatus(400);
+				e1.printStackTrace();
 			}
 		}
 	}
