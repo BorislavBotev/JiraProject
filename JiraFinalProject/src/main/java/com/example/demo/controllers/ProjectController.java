@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,8 +41,12 @@ public class ProjectController {
 			return;
 		}
 		if(project.getName()==null || project.getName().trim().length()==0) {
-			response.setStatus(400);
-			return;
+			try {
+				response.sendError(404, "Project not found");
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		try {
 			projectDao.createProject(project, request);
@@ -55,10 +60,13 @@ public class ProjectController {
 		if(!uc.isLoggedIn(request, response)) {
 			return null;
 		}
-		if(projectRepository.getOne(id)==null) {
-			System.out.println("invalid project id");
-			response.setStatus(404);
-			return null;
+		if(!projectRepository.findById(id).isPresent()) {
+			try {
+				response.sendError(404, "Project not found");
+				return null;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return projectDao.listAllComponentsFromproject(id);
 	}
@@ -68,9 +76,13 @@ public class ProjectController {
 			return;
 		}
 		if(!projectRepository.findById(id).isPresent()) {
-			System.out.println("invalid project id");
-			response.setStatus(404);
-			return;
+			try {
+				response.sendError(404, "Project not found");
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
 		projectService.deleteProjectById(id);
 	}

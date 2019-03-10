@@ -5,17 +5,16 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.demo.check.UserCheck;
 import com.example.demo.dto.ComponentInfoDTO;
 import com.example.demo.dto.CreateComponentDTO;
 import com.example.demo.exceptions.InvalidComponentException;
+
 import com.example.demo.exceptions.InvalidSprintException;
 import com.example.demo.model.Issue;
 import com.example.demo.model.Project;
