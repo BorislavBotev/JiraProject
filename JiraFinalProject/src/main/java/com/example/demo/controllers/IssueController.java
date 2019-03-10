@@ -193,10 +193,10 @@ public class IssueController {
 			return;
 		}
 		try {
-			issueDao.deleteIssueById(issueId);
+			issueService.deleteIssueById(issueId);
 		} catch (IssueException e) {
 			try {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

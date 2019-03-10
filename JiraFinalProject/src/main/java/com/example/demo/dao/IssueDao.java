@@ -47,11 +47,4 @@ public class IssueDao {
 				issue.getCreateDate(), issue.getLastUpdateDate(), issue.getReporterUser().getUsername(), issue.getAsigneeUser().getUsername())).get();
 	}
 	
-	public void deleteIssueById(long issueId) throws IssueException {
-		if(!issueRepository.findById(issueId).isPresent()) {
-			throw new IssueException("Issue Not Found!");
-		}
-		issueRepository.deleteById(issueId);
-	}
-	
 }

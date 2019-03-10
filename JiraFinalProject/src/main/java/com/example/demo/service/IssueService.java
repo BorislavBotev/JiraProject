@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.dto.AddIssueDTO;
@@ -27,6 +30,7 @@ import com.example.demo.repositories.SprintRepository;
 import com.example.demo.repositories.StatusRepository;
 import com.example.demo.repositories.TypeRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.repositories.WorklogRepository;
 
 @Service
 public class IssueService {
@@ -47,6 +51,8 @@ public class IssueService {
 	private UserRepository userRepository;
 	@Autowired
 	private ComponentRepository componentRepository;
+	@Autowired
+	private WorklogRepository worklogRepository;
 	
 	
 	public void addIssue(AddIssueDTO newIssue) throws Exception {
@@ -166,7 +172,14 @@ public class IssueService {
 		issueRepository.save(issue);
 	}
 	
-	
+	@Transactional
+	public void deleteIssueById(long issueId) throws IssueException {
+		if(!issueRepository.findById(issueId).isPresent()) {
+			throw new IssueException("Issue Not Found!");
+		}
+		worklogRepository.findAllByIssueId(issueId).forEach(wl -> worklogRepository.deleteById(wl.getId()));
+		issueRepository.deleteById(issueId);
+	}
 	
 	
 	private boolean isValidDescription(AddIssueDTO newIssue) {
